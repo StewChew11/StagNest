@@ -692,7 +692,7 @@ footer.site p { color: rgba(255,255,255,.5); font-size: 14px; max-width: 260px; 
 .detail-addr svg { width: 16px; height: 16px; color: var(--faint); }
 .detail-badges { display: flex; gap: 8px; margin-bottom: 24px; }
 
-.facts-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; padding: 22px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); margin-bottom: 32px; }
+.facts-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; padding: 22px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); margin-bottom: 32px; }
 .fact { text-align: left; }
 .fact .v { font-size: 20px; font-weight: 800; }
 .fact .k { font-size: 12.5px; color: var(--faint); margin-top: 2px; }
