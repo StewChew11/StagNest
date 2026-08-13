@@ -38,7 +38,7 @@
       <div class="empty-state hidden" id="invitationsEmpty">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
         <h3>No pending invitations</h3>
-        <p>Invite someone from the <a href="roommates.html">roommate finder</a> to get started.</p>
+        <p>Invite someone from the <a href="roommates.html">roommate finder</a>, or by email, to get started.</p>
       </div>
     </div>
 
@@ -62,7 +62,8 @@
 <script>
   var ICON = {
     doc: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2h6l6 6v12a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Z"/><path d="M14 2v6h6"/></svg>',
-    msg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-8.9 8.5 8.7 8.7 0 0 1-3.8-.9L3 20l1-5.2A8.4 8.4 0 0 1 12.5 3a8.4 8.4 0 0 1 8.5 8.5Z"/></svg>'
+    msg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-8.9 8.5 8.7 8.7 0 0 1-3.8-.9L3 20l1-5.2A8.4 8.4 0 0 1 12.5 3a8.4 8.4 0 0 1 8.5 8.5Z"/></svg>',
+    mail: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>'
   };
 
   /* ---------------- Tabs ---------------- */
@@ -76,22 +77,28 @@
   });
 
   /* ---------------- Invitations ---------------- */
+  function formatInviteDate(iso) {
+    return new Date(iso).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+  }
+
   function renderInvitations() {
     var invites = getInvites();
     var roommates = invites.map(function (id) {
       return window.ROOMMATES.find(function (r) { return r.id === id; });
     }).filter(Boolean);
+    var emailInvites = getEmailInvites();
 
     var list = document.getElementById("invitationsList");
     var empty = document.getElementById("invitationsEmpty");
 
-    if (roommates.length === 0) {
+    if (roommates.length === 0 && emailInvites.length === 0) {
       list.innerHTML = "";
       empty.classList.remove("hidden");
       return;
     }
     empty.classList.add("hidden");
-    list.innerHTML = roommates.map(function (r) {
+
+    var roommateRows = roommates.map(function (r) {
       return '<div class="invite-item">' +
         '<div class="item-main">' +
           '<div class="landlord-avatar sm">' + r.initials + "</div>" +
@@ -103,13 +110,30 @@
         "</div>" +
       "</div>";
     }).join("");
+
+    var emailRows = emailInvites.map(function (inv) {
+      return '<div class="invite-item">' +
+        '<div class="item-main">' +
+          '<div class="landlord-avatar sm">' + ICON.mail + "</div>" +
+          '<div><div class="item-title">' + inv.email + '</div><div class="item-sub">Invited ' + formatInviteDate(inv.sentAt) + "</div></div>" +
+        "</div>" +
+        '<div class="row-actions">' +
+          '<span class="badge badge-amber">Invited — pending</span>' +
+          '<button class="btn btn-ghost btn-sm" data-cancel-email="' + inv.email + '">Cancel</button>' +
+        "</div>" +
+      "</div>";
+    }).join("");
+
+    list.innerHTML = roommateRows + emailRows;
   }
   document.getElementById("invitationsList").addEventListener("click", function (e) {
     var acceptBtn = e.target.closest("button[data-accept]");
     var declineBtn = e.target.closest("button[data-decline]");
+    var cancelBtn = e.target.closest("button[data-cancel-email]");
     if (acceptBtn) acceptInvite(Number(acceptBtn.dataset.accept));
     if (declineBtn) declineInvite(Number(declineBtn.dataset.decline));
-    if (acceptBtn || declineBtn) {
+    if (cancelBtn) removeEmailInvite(cancelBtn.dataset.cancelEmail);
+    if (acceptBtn || declineBtn || cancelBtn) {
       renderInvitations();
       renderChrome();
     }

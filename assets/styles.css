@@ -907,6 +907,9 @@ table.data-table { width: 100%; border-collapse: collapse; }
 .group-budget-stats .stat .k { font-size: 12px; color: var(--faint); }
 .group-empty { font-size: 13.5px; color: var(--faint); margin-bottom: 16px; }
 
+.invite-email-row { display: flex; flex-direction: column; gap: 8px; }
+.landlord-avatar svg { width: 16px; height: 16px; }
+
 .sidebar-group-title { font-weight: 800; font-size: 14px; margin-bottom: 10px; }
 .sidebar-group-section .group-members { margin-bottom: 10px; }
 .sidebar-group-section .group-member-row .name { font-weight: 600; font-size: 13.5px; }

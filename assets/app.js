@@ -392,6 +392,78 @@ function declineInvite(id) {
 }
 
 /* -------------------------------------------------------------------------
+   Email invites (localStorage) — for inviting someone by email address who
+   isn't a roommate profile in window.ROOMMATES. There's no profile to add
+   to the group here, so these just show up in the inbox as "Invited —
+   pending" rather than something to accept/decline.
+   ------------------------------------------------------------------------- */
+var EMAIL_INVITES_KEY = "stagnest_email_invites";
+
+function getEmailInvites() {
+  try {
+    var raw = localStorage.getItem(EMAIL_INVITES_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch (e) {
+    return [];
+  }
+}
+
+function saveEmailInvites(list) {
+  localStorage.setItem(EMAIL_INVITES_KEY, JSON.stringify(list));
+}
+
+function isValidEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function addEmailInvite(email) {
+  var invites = getEmailInvites();
+  var exists = invites.some(function (i) { return i.email.toLowerCase() === email.toLowerCase(); });
+  if (!exists) {
+    invites.push({ email: email, sentAt: new Date().toISOString() });
+    saveEmailInvites(invites);
+  }
+  return invites;
+}
+
+function removeEmailInvite(email) {
+  var invites = getEmailInvites().filter(function (i) { return i.email.toLowerCase() !== email.toLowerCase(); });
+  saveEmailInvites(invites);
+}
+
+/* -------------------------------------------------------------------------
+   sendInvite(email) — static demo sends via the visitor's own mail client
+   (mailto:), which requires no backend. Real automated sending — so the
+   email actually goes out without the visitor opening their own mail
+   client — needs EmailJS (client-side) or a backend endpoint. Drop that
+   call in where marked below; until then this falls back to mailto:.
+   ------------------------------------------------------------------------- */
+function sendInvite(email) {
+  var subject = "Join my StagNest house group";
+  var body = "Hey,\n\n" +
+    "I'm putting together a house-hunting group on StagNest and would love for you to join.\n\n" +
+    "Check it out here: https://stagnest.netlify.app/roommates.html\n\n" +
+    "— sent from StagNest";
+
+  // ---- Real automated send goes here (optional upgrade) ----
+  // Example with EmailJS (https://www.emailjs.com/), once loaded on the
+  // page and initialized with your public key:
+  //
+  //   emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", {
+  //     to_email: email,
+  //     subject: subject,
+  //     message: body
+  //   });
+  //   return; // skip the mailto: fallback once real sending is wired up
+  //
+  // Or POST { email, subject, body } to a backend endpoint that sends the
+  // email server-side. Either replaces the mailto: fallback below.
+
+  var url = "mailto:" + email + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
+  window.location.href = url;
+}
+
+/* -------------------------------------------------------------------------
    Inbox read/unread (localStorage) — payments and landlord-message
    notifications are static sample content (window.SAMPLE_PAYMENTS /
    window.SAMPLE_MESSAGES in data.js); only which ones have been opened
@@ -424,7 +496,7 @@ function getInboxUnreadCount() {
   var read = getReadIds();
   var unreadPayments = (window.SAMPLE_PAYMENTS || []).filter(function (p) { return read.indexOf(p.id) === -1; }).length;
   var unreadMessages = (window.SAMPLE_MESSAGES || []).filter(function (m) { return read.indexOf(m.id) === -1; }).length;
-  return getInvites().length + unreadPayments + unreadMessages;
+  return getInvites().length + getEmailInvites().length + unreadPayments + unreadMessages;
 }
 
 function navBadgeHtml() {

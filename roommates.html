@@ -63,6 +63,17 @@
         <div class="group-members" id="groupMembers"></div>
         <div class="group-empty hidden" id="groupEmptyMsg">Invite roommates below — they'll join your group once accepted in your <a href="inbox.html">inbox</a>.</div>
         <div class="group-budget-stats" id="groupStats"></div>
+
+        <div class="field" id="inviteEmailField" style="margin-bottom:16px">
+          <label for="inviteEmailInput">Invite by email</label>
+          <div class="invite-email-row">
+            <input type="email" class="input" id="inviteEmailInput" placeholder="name@email.com">
+            <button type="button" class="btn btn-outline btn-block" id="inviteEmailBtn">Send invite</button>
+          </div>
+          <div class="error">Enter a valid email address.</div>
+          <div class="hint hidden" id="inviteEmailSuccess" style="color:var(--emerald); font-weight:700"></div>
+        </div>
+
         <a href="browse.html" class="btn btn-primary btn-block" id="applyGroupBtn">Apply to a house together</a>
       </div>
     </aside>
@@ -253,6 +264,31 @@
     removeFromGroup(Number(rm.dataset.id));
     renderGroupPanel();
     applyFilters();
+  });
+
+  /* ---------------- Invite by email ---------------- */
+  var inviteEmailField = document.getElementById("inviteEmailField");
+  var inviteEmailInput = document.getElementById("inviteEmailInput");
+  var inviteEmailSuccess = document.getElementById("inviteEmailSuccess");
+
+  document.getElementById("inviteEmailBtn").addEventListener("click", function () {
+    var email = inviteEmailInput.value.trim();
+    if (!isValidEmail(email)) {
+      inviteEmailField.classList.add("has-error");
+      inviteEmailSuccess.classList.add("hidden");
+      return;
+    }
+    inviteEmailField.classList.remove("has-error");
+    addEmailInvite(email);
+    sendInvite(email);
+    inviteEmailInput.value = "";
+    inviteEmailSuccess.textContent = "Invite sent to " + email + ".";
+    inviteEmailSuccess.classList.remove("hidden");
+    renderChrome();
+  });
+  inviteEmailInput.addEventListener("input", function () {
+    inviteEmailField.classList.remove("has-error");
+    inviteEmailSuccess.classList.add("hidden");
   });
 
   applyFilters();
