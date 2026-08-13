@@ -63,16 +63,14 @@
           </div>
           <div class="row-2">
             <div class="field">
-              <label for="pAvail">Available from</label>
-              <input type="text" class="input" id="pAvail" placeholder="Jun 1, 2026" required>
+              <label for="pLeaseStart">Lease start date</label>
+              <input type="date" class="input" id="pLeaseStart" name="leaseStart" required>
             </div>
-            <div class="field">
-              <label for="pLease">Lease term</label>
-              <select class="input" id="pLease">
-                <option>12 months</option>
-                <option>9 months (academic year)</option>
-                <option>Summer sublet</option>
-              </select>
+            <div class="field" id="leaseEndField">
+              <label for="pLeaseEnd">Lease end date</label>
+              <input type="date" class="input" id="pLeaseEnd" name="leaseEnd" required>
+              <div class="hint" id="leaseLengthHint"></div>
+              <div class="error">End date must be after the start date.</div>
             </div>
           </div>
           <div class="row-2">
@@ -189,6 +187,44 @@
     renderThumbs();
   });
 
+  /* ---------------- Lease dates ---------------- */
+  function formatDate(dateStr) {
+    var d = new Date(dateStr + "T00:00:00");
+    return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+  }
+  function leaseMonthsBetween(startStr, endStr) {
+    var start = new Date(startStr + "T00:00:00");
+    var end = new Date(endStr + "T00:00:00");
+    var days = Math.round((end - start) / (1000 * 60 * 60 * 24));
+    return Math.max(1, Math.round(days / 30.44));
+  }
+
+  var leaseStartInput = document.getElementById("pLeaseStart");
+  var leaseEndInput = document.getElementById("pLeaseEnd");
+  var leaseEndField = document.getElementById("leaseEndField");
+  var leaseLengthHint = document.getElementById("leaseLengthHint");
+
+  function validateLeaseDates() {
+    var startVal = leaseStartInput.value;
+    var endVal = leaseEndInput.value;
+    if (!startVal || !endVal) {
+      leaseEndField.classList.remove("has-error");
+      leaseLengthHint.textContent = "";
+      return true;
+    }
+    if (endVal <= startVal) {
+      leaseEndField.classList.add("has-error");
+      leaseLengthHint.textContent = "";
+      return false;
+    }
+    leaseEndField.classList.remove("has-error");
+    var months = leaseMonthsBetween(startVal, endVal);
+    leaseLengthHint.textContent = "That's about " + months + " month" + (months === 1 ? "" : "s") + ".";
+    return true;
+  }
+  leaseStartInput.addEventListener("change", validateLeaseDates);
+  leaseEndInput.addEventListener("change", validateLeaseDates);
+
   document.getElementById("listingForm").addEventListener("submit", function (e) {
     e.preventDefault();
     var title = document.getElementById("pTitle").value.trim();
@@ -198,12 +234,17 @@
     var beds = document.getElementById("pBeds").value;
     var baths = document.getElementById("pBaths").value;
     var desc = document.getElementById("pDesc").value.trim();
-    var avail = document.getElementById("pAvail").value.trim();
+    var leaseStart = leaseStartInput.value;
+    var leaseEnd = leaseEndInput.value;
     var cName = document.getElementById("cName").value.trim();
     var cEmail = document.getElementById("cEmail").value.trim();
 
-    if (!title || !address || !rent || !beds || !baths || !desc || !avail || !cName || !cEmail) {
+    if (!title || !address || !rent || !beds || !baths || !desc || !leaseStart || !leaseEnd || !cName || !cEmail) {
       alertMissing();
+      return;
+    }
+    if (!validateLeaseDates()) {
+      leaseEndInput.focus();
       return;
     }
 
@@ -219,8 +260,7 @@
       ["Address", address],
       ["Rent", window.money(Number(rent)) + "/mo"],
       ["Beds / baths", beds + " bed, " + baths + " bath"],
-      ["Available", avail],
-      ["Lease term", document.getElementById("pLease").value],
+      ["Lease term", formatDate(leaseStart) + " – " + formatDate(leaseEnd)],
       ["Furnished", document.getElementById("pFurnished").checked ? "Yes" : "No"],
       ["Utilities included", utilities.length ? utilities.join(", ") : "None"],
       ["Parking", document.getElementById("pParking").value.trim() || "Not specified"],
