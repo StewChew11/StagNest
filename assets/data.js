@@ -41,7 +41,7 @@ window.LISTINGS = [
       { name: "J. Kwan", initials: "JK", rating: 5, date: "Jul 2026", text: "Marie's been great with maintenance all year. The kitchen redo is legit — makes the whole downstairs feel bigger. Walk to campus is exactly what they say, maybe 6-7 min if you're not rushing." },
       { name: "D. Ruiz", initials: "DR", rating: 5, date: "Mar 2026", text: "Lived here fall semester. Backyard got a ton of use once it warmed up. Only downside is the driveway gets tight with four cars, but otherwise no complaints." }
     ],
-    desc: "We redid the kitchen and both bathrooms last summer, so it's newer than most of what's on North Benson. Six-minute walk to campus if you cut through by the tennis courts. Backyard's fenced in, which is nice when it's not 15 degrees out. Marie (the landlord) went to Fairfield too, so she actually gets what a group house needs — fixed our garbage disposal same day last semester.",
+    desc: "Redid the kitchen and both bathrooms last summer. Nothing else on North Benson is this new. Campus is six minutes away if you cut through by the tennis courts — less if you jaywalk, not that I'd recommend it. Backyard's fenced, which matters more than you'd think once it's actually not 15 degrees out. Marie's a Fairfield grad herself, so she gets what a group house actually needs (garbage disposal died on a Tuesday; she had someone out by Wednesday).",
     amenities: ["In-unit laundry", "Dishwasher", "Central air", "Fenced yard", "High-speed internet ready", "Off-street parking"],
     r: { campus: 6, bars: 12, rest: 9, grocery: 14, safety: 9, quiet: 7, conv: 8 }
   },
@@ -65,7 +65,7 @@ window.LISTINGS = [
       { name: "J. Marsh", initials: "JM", rating: 5, date: "Aug 2025", text: "Tom fixed the dishwasher within a day when it broke in October. Basement's a little damp in spring but nothing crazy. Great location if you actually want to walk to the beach." },
       { name: "A. Patel", initials: "AP", rating: 4, date: "Dec 2025", text: "Solid house, walk-in closets are bigger than I expected. Heat runs a little uneven upstairs but we just used a space heater in the back bedroom." }
     ],
-    desc: "Tom redid the kitchen and both bathrooms before we moved in, so nothing's original except the walk-in closets (which are actually huge, no complaints there). It's maybe an 8-minute walk to the beach if you cut down Reef. Basement floods a little in heavy rain but nothing that's ruined anything — just don't store stuff directly on the floor down there.",
+    desc: "Tom gutted the kitchen and both bathrooms before we signed. The only original thing left is the walk-in closets, and honestly? Huge. No complaints. Cut down Reef and you're at the beach in eight minutes, give or take. One catch — the basement floods a bit when it really pours. Nothing's ever been ruined by it, but keep your stuff off the floor down there. Learned that one the easy way, not the hard way.",
     amenities: ["Finished basement", "Washer/dryer", "Pet friendly", "Hardwood floors", "Storage shed"],
     r: { campus: 11, bars: 15, rest: 10, grocery: 8, safety: 8, quiet: 8, conv: 7 }
   },
@@ -89,7 +89,7 @@ window.LISTINGS = [
       { name: "C. Boone", initials: "CB", rating: 4, date: "May 2026", text: "Exactly what you'd expect from a Jefferson house — loud, a little beat up, but everyone had their own room and the deck got a lot of use. Landlord's slow on small stuff but handled the heater going out fast." },
       { name: "M. Tran", initials: "MT", rating: 3, date: "Feb 2026", text: "Furniture's seen better days and the common room carpet needs replacing, but the location can't be beat if you're trying to walk everywhere. Wouldn't recommend if you actually want quiet." }
     ],
-    desc: "Classic Fairfield rental steps from the Jefferson Hill crowd. Big common room, deck for hangouts, and enough bedrooms that everyone gets their own space. Furnished with durable, easy-care furniture.",
+    desc: "A Jefferson Hill staple — steps from the crowd, built for a group that actually hangs out together. Big common room, a deck that gets real use, and enough bedrooms that nobody's fighting over space. Furnished throughout with pieces built to survive a group house, not just decorate one.",
     amenities: ["Furnished", "Deck", "Large common room", "Cable ready", "Trash included"],
     r: { campus: 4, bars: 5, rest: 6, grocery: 16, safety: 6, quiet: 4, conv: 8 }
   },
@@ -110,7 +110,7 @@ window.LISTINGS = [
     rating: null,
     reviewCount: 0,
     reviews: [],
-    desc: "This one's for people who don't want to hear a party through the wall — mostly older couples and a few grad students on this street. Small yard out back, good for a grill. It's an 18-minute walk to campus so probably not for freshmen, but if you have a car or don't mind the walk it's worth it for the quiet alone.",
+    desc: "Not for everyone, honestly. This street is older couples and a handful of grad students — if you want to hear a party through the wall, keep scrolling. What you get instead: quiet. Real quiet. Small yard out back for a grill, and enough distance from campus (18 minutes on foot) that freshmen probably shouldn't bother. Got a car, or don't mind the walk? Worth it just for the silence alone.",
     amenities: ["Private yard", "Pet friendly", "Washer/dryer hookup", "Off-street parking"],
     r: { campus: 18, bars: 22, rest: 15, grocery: 6, safety: 9, quiet: 10, conv: 5 }
   },
@@ -134,7 +134,7 @@ window.LISTINGS = [
       { name: "S. Huang", initials: "SH", rating: 5, date: "Sep 2025", text: "Best senior year decision we made. Watched sunsets from the porch more nights than not. Marie mentioned the storm windows upfront so no surprises when the nor'easter hit in November." },
       { name: "L. Osei", initials: "LO", rating: 5, date: "Jun 2026", text: "Bike to campus is closer to 12-13 minutes than 10 if the wind's against you, but otherwise everything in the listing was accurate. Worth every penny for the summer months alone." }
     ],
-    desc: "This is the house everyone's jealous of once summer hits — porch wraps around the whole front, and you can see the water from the upstairs bedrooms on a clear day. Bike to campus takes maybe 10 minutes if the wind's not fighting you. Winters get a little rough with the salt air (ask Marie about the storm windows) but it's worth it May through October.",
+    desc: "Come June, this is the house everyone wishes they'd signed for. Porch wraps clear around the front; on a good clear day you can see water from the upstairs bedrooms, no exaggeration. Bike to campus in about ten minutes — less if the wind's at your back, more if it isn't. Winters get salty and a little rough (ask Marie about the storm windows, she'll walk you through it), but May through October? Worth every bit of it.",
     amenities: ["Wraparound porch", "Outdoor shower", "Furnished", "Bike storage", "In-unit laundry"],
     r: { campus: 14, bars: 18, rest: 12, grocery: 20, safety: 8, quiet: 8, conv: 6 }
   },
@@ -158,7 +158,7 @@ window.LISTINGS = [
       { name: "R. Fenn", initials: "RF", rating: 5, date: "Nov 2025", text: "Garage is clutch in the winter, no scraping ice off the windshield. Feels more like an apartment than a typical rental house, which some of my friends thought was a downside but I liked it." },
       { name: "K. Ng", initials: "KN", rating: 4, date: "Apr 2026", text: "Smart thermostat actually works, kept our heating bill lower than the house we had sophomore year. Coastal Property Group is responsive but very by-the-book about the lease terms." }
     ],
-    desc: "A newer-construction townhome with a private garage and low-maintenance finishes. Great option for students who want something that feels like an apartment but with house-level space.",
+    desc: "Newer construction, a private garage, finishes that don't demand upkeep. If you want the space of a house without the upkeep of one — this is closer to an apartment that happens to have room to breathe.",
     amenities: ["Attached garage", "Central air", "Dishwasher", "Walk-in closets", "Smart thermostat"],
     r: { campus: 8, bars: 10, rest: 7, grocery: 11, safety: 9, quiet: 7, conv: 9 }
   },
@@ -182,7 +182,7 @@ window.LISTINGS = [
       { name: "B. Walsh", initials: "BW", rating: 4, date: "Jan 2026", text: "You get what you pay for but that's kind of the point — it's cheap for Fairfield. Rick picked up when I called about the water heater and had someone out same week." },
       { name: "T. Suarez", initials: "TS", rating: 3, date: "Oct 2025", text: "Finishes are dated for sure, and the walls are thin between bedrooms. But saved us real money compared to the houses near campus, and Post Rd shops being close was genuinely convenient." }
     ],
-    desc: "Not going to lie, the finishes are nothing special — it's a rental, not a renovation show. But rent's lower than most of what's on here, it's close enough to walk to the shops on Post Rd, and Rick actually picks up the phone when something breaks. Good option if you'd rather save the money for something else.",
+    desc: "Won't lie to you — the finishes are nothing special. This isn't a renovation show, it's a rental. But the rent's lower than almost everything else on here, Post Rd shops are an easy walk, and Rick picks up the phone. Actually picks up. Something breaks, he's not ghosting you for three weeks. If you'd rather put the savings toward literally anything else, this is your house.",
     amenities: ["Pet friendly", "Close to shops", "Washer/dryer hookup"],
     r: { campus: 16, bars: 14, rest: 4, grocery: 3, safety: 7, quiet: 6, conv: 9 }
   },
@@ -206,7 +206,7 @@ window.LISTINGS = [
       { name: "N. Ghosh", initials: "NG", rating: 5, date: "Aug 2025", text: "Two kitchens sounds excessive until you're trying to cook dinner for six people at once. Basement fit a full setup for movie nights. Definitely a group house, not for anyone who wants quiet." },
       { name: "E. Cole", initials: "EC", rating: 4, date: "Mar 2026", text: "Big house, big yard, exactly as advertised. A little bit of a walk to campus and the bars so budget extra time, but worth it for the space if you're renting with a large group." }
     ],
-    desc: "One of the bigger group houses near campus — great for a large friend group that wants to stay together senior year. Two full kitchens and a huge finished basement.",
+    desc: "One of the biggest group houses near campus, full stop. Two full kitchens — because six people sharing one stove by October is a friendship-ender — and a finished basement with real square footage. Built for the friend group that refuses to split up senior year.",
     amenities: ["Two kitchens", "Finished basement", "Furnished", "Large yard", "Off-street parking"],
     r: { campus: 9, bars: 13, rest: 11, grocery: 17, safety: 7, quiet: 5, conv: 7 }
   },
@@ -230,7 +230,7 @@ window.LISTINGS = [
       { name: "P. Vance", initials: "PV", rating: 5, date: "May 2026", text: "Quiet is an understatement — perfect if you actually need to study. Ellen's easy to reach and the afternoon light in the living room is real, not just a listing thing." },
       { name: "H. Jin", initials: "HJ", rating: 5, date: "Feb 2026", text: "Ran the marsh trail behind the house probably 3x a week all spring. You definitely need a car or a bike out here though, it's far from everything else." }
     ],
-    desc: "Small place but it gets great light in the afternoon. We used to run the marsh trail behind South Pine Creek most mornings before class — worth it if you're into that. Not close to much else honestly, you'll want a bike or a car, but it's quiet and Ellen's easy to deal with.",
+    desc: "Small, sure. But the afternoon light in here is something else. Used to run the marsh trail behind South Pine Creek most mornings before class — if that's your thing, you'll love it here. Not close to much else, I won't pretend otherwise. Bring a bike or a car. What you get in return: real quiet, and a landlord in Ellen who's genuinely easy to deal with.",
     amenities: ["Updated kitchen", "Hardwood floors", "Storage shed", "Off-street parking"],
     r: { campus: 22, bars: 25, rest: 17, grocery: 12, safety: 9, quiet: 9, conv: 4 }
   }
