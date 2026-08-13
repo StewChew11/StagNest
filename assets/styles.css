@@ -772,6 +772,7 @@ footer.site p { color: rgba(255,255,255,.5); font-size: 14px; max-width: 260px; 
 .account-shell { padding: 40px 0 80px; }
 .account-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 32px; flex-wrap: wrap; gap: 16px; }
 .stat-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 32px; }
+.stat-row-5 { grid-template-columns: repeat(5, 1fr); }
 .stat-card { padding: 20px; }
 .stat-card .v { font-size: 26px; font-weight: 800; }
 .stat-card .k { font-size: 13px; color: var(--muted); margin-top: 4px; }

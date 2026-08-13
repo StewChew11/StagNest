@@ -39,11 +39,6 @@
     var pct = Math.max(6, 100 - (minutes / 30) * 100);
     return '<div class="bar-row"><div class="bar-label">' + label + '</div><div class="bar-track"><div class="bar-fill" style="width:' + pct + '%"></div></div><div class="bar-val">' + minutes + ' min</div></div>';
   }
-  function scoreBar(label, val) {
-    var pct = val * 10;
-    return '<div class="bar-row"><div class="bar-label">' + label + '</div><div class="bar-track"><div class="bar-fill" style="width:' + pct + '%"></div></div><div class="bar-val">' + val + '/10</div></div>';
-  }
-
   /* ---------------- Lease dates ---------------- */
   function formatDate(dateStr) {
     var d = new Date(dateStr + "T00:00:00");
@@ -161,11 +156,6 @@
             walkBar('Walk to <a href="https://www.seagrapect.com/" target="_blank" rel="noopener">The Seagrape</a>', listing.r.seagrapeWalkMin) +
             walkBar("Drive to campus", listing.r.campusDriveMin) +
             walkBar('Walk to downtown<div class="bar-sublabel">(Old Post Tavern)</div>', listing.r.downtownWalkMin) +
-          "</div>" +
-          '<div class="card card-pad" style="margin-top:14px">' +
-            scoreBar("Safety", listing.r.safety) +
-            scoreBar("Quiet", listing.r.quiet) +
-            scoreBar("Convenience", listing.r.conv) +
           "</div>" +
         "</div>" +
 

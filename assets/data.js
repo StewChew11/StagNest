@@ -27,6 +27,7 @@ window.LISTINGS = [
     address: "142 North Benson Rd, Fairfield, CT",
     lat: 41.1601, lng: -73.2612,
     rent: 3600, beds: 4, baths: 2,
+    maxTenants: 4, tenantsFilled: 2,
     furnished: true,
     leaseStart: "2026-06-01", leaseEnd: "2027-05-31", deposit: 3600,
     parking: "Driveway, 4 spots",
@@ -43,7 +44,7 @@ window.LISTINGS = [
     ],
     desc: "Redid the kitchen and both bathrooms last summer. Nothing else on North Benson is this new. Campus is six minutes away if you cut through by the tennis courts — less if you jaywalk, not that I'd recommend it. Backyard's fenced, which matters more than you'd think once it's actually not 15 degrees out. Marie's a Fairfield grad herself, so she gets what a group house actually needs (garbage disposal died on a Tuesday; she had someone out by Wednesday).",
     amenities: ["In-unit laundry", "Dishwasher", "Central air", "Fenced yard", "High-speed internet ready", "Off-street parking"],
-    r: { campus: 6, campusDriveMin: 2, seagrapeWalkMin: 12, downtownWalkMin: 16, safety: 9, quiet: 7, conv: 8 }
+    r: { campus: 6, campusDriveMin: 2, seagrapeWalkMin: 12, downtownWalkMin: 16 }
   },
   {
     id: 2,
@@ -51,6 +52,7 @@ window.LISTINGS = [
     address: "58 Reef Rd, Fairfield, CT",
     lat: 41.1487, lng: -73.2545,
     rent: 3150, beds: 3, baths: 2,
+    maxTenants: 3, tenantsFilled: 3,
     furnished: false,
     leaseStart: "2026-08-15", leaseEnd: "2027-08-14", deposit: 3150,
     parking: "2 driveway spots",
@@ -67,7 +69,7 @@ window.LISTINGS = [
     ],
     desc: "Tom gutted the kitchen and both bathrooms before we signed. The only original thing left is the walk-in closets, and honestly? Huge. No complaints. Cut down Reef and you're at the beach in eight minutes, give or take. One catch — the basement floods a bit when it really pours. Nothing's ever been ruined by it, but keep your stuff off the floor down there. Learned that one the easy way, not the hard way.",
     amenities: ["Finished basement", "Washer/dryer", "Hardwood floors", "Storage shed"],
-    r: { campus: 11, campusDriveMin: 4, seagrapeWalkMin: 15, downtownWalkMin: 13, safety: 8, quiet: 8, conv: 7 }
+    r: { campus: 11, campusDriveMin: 4, seagrapeWalkMin: 15, downtownWalkMin: 13 }
   },
   {
     id: 3,
@@ -76,6 +78,7 @@ window.LISTINGS = [
     address: "27 Jefferson St, Fairfield, CT",
     lat: 41.1622, lng: -73.2578,
     rent: 4500, beds: 5, baths: 3,
+    maxTenants: 5, tenantsFilled: 2,
     furnished: true,
     leaseStart: "2026-06-01", leaseEnd: "2027-05-31", deposit: 4500,
     parking: "Street parking",
@@ -92,7 +95,7 @@ window.LISTINGS = [
     ],
     desc: "A Jefferson Hill staple — steps from the crowd, built for a group that actually hangs out together. Big common room, a deck that gets real use, and enough bedrooms that nobody's fighting over space. Furnished throughout with pieces built to survive a group house, not just decorate one.",
     amenities: ["Furnished", "Deck", "Large common room", "Cable ready", "Trash included"],
-    r: { campus: 4, campusDriveMin: 2, seagrapeWalkMin: 5, downtownWalkMin: 14, safety: 6, quiet: 4, conv: 8 }
+    r: { campus: 4, campusDriveMin: 2, seagrapeWalkMin: 5, downtownWalkMin: 14 }
   },
   {
     id: 4,
@@ -100,6 +103,7 @@ window.LISTINGS = [
     address: "301 Old Post Rd, Fairfield, CT",
     lat: 41.1519, lng: -73.2701,
     rent: 2400, beds: 2, baths: 1,
+    maxTenants: 2, tenantsFilled: 0,
     furnished: false,
     leaseStart: "2026-09-01", leaseEnd: "2027-08-31", deposit: 2400,
     parking: "1 driveway spot",
@@ -113,7 +117,7 @@ window.LISTINGS = [
     reviews: [],
     desc: "Not for everyone, honestly. This street is older couples and a handful of grad students — if you want to hear a party through the wall, keep scrolling. What you get instead: quiet. Real quiet. Small yard out back for a grill, and enough distance from campus (18 minutes on foot) that freshmen probably shouldn't bother. Got a car, or don't mind the walk? Worth it just for the silence alone.",
     amenities: ["Private yard", "Washer/dryer hookup", "Off-street parking"],
-    r: { campus: 18, campusDriveMin: 6, seagrapeWalkMin: 22, downtownWalkMin: 8, safety: 9, quiet: 10, conv: 5 }
+    r: { campus: 18, campusDriveMin: 6, seagrapeWalkMin: 22, downtownWalkMin: 8 }
   },
   {
     id: 5,
@@ -122,6 +126,7 @@ window.LISTINGS = [
     address: "612 Fairfield Beach Rd, Fairfield, CT",
     lat: 41.1425, lng: -73.2489,
     rent: 3900, beds: 4, baths: 2,
+    maxTenants: 4, tenantsFilled: 3,
     furnished: true,
     leaseStart: "2026-06-01", leaseEnd: "2027-05-31", deposit: 3900,
     parking: "Driveway, 3 spots",
@@ -138,7 +143,7 @@ window.LISTINGS = [
     ],
     desc: "Come June, this is the house everyone wishes they'd signed for. Porch wraps clear around the front; on a good clear day you can see water from the upstairs bedrooms, no exaggeration. Bike to campus in about ten minutes — less if the wind's at your back, more if it isn't. Winters get salty and a little rough (ask Marie about the storm windows, she'll walk you through it), but May through October? Worth every bit of it.",
     amenities: ["Wraparound porch", "Outdoor shower", "Furnished", "Bike storage", "In-unit laundry"],
-    r: { campus: 14, campusDriveMin: 5, seagrapeWalkMin: 18, downtownWalkMin: 20, safety: 8, quiet: 8, conv: 6 }
+    r: { campus: 14, campusDriveMin: 5, seagrapeWalkMin: 18, downtownWalkMin: 20 }
   },
   {
     id: 6,
@@ -146,6 +151,7 @@ window.LISTINGS = [
     address: "84 Melville Ave, Fairfield, CT",
     lat: 41.1578, lng: -73.2633,
     rent: 3300, beds: 3, baths: 2.5,
+    maxTenants: 3, tenantsFilled: 3,
     furnished: false,
     leaseStart: "2026-07-01", leaseEnd: "2027-06-30", deposit: 3300,
     parking: "Attached garage",
@@ -162,7 +168,7 @@ window.LISTINGS = [
     ],
     desc: "Newer construction, a private garage, finishes that don't demand upkeep. If you want the space of a house without the upkeep of one — this is closer to an apartment that happens to have room to breathe.",
     amenities: ["Attached garage", "Central air", "Dishwasher", "Walk-in closets", "Smart thermostat"],
-    r: { campus: 8, campusDriveMin: 3, seagrapeWalkMin: 10, downtownWalkMin: 10, safety: 9, quiet: 7, conv: 9 }
+    r: { campus: 8, campusDriveMin: 3, seagrapeWalkMin: 10, downtownWalkMin: 10 }
   },
   {
     id: 7,
@@ -170,6 +176,7 @@ window.LISTINGS = [
     address: "1190 Post Rd, Fairfield, CT",
     lat: 41.1462, lng: -73.2612,
     rent: 2850, beds: 3, baths: 1.5,
+    maxTenants: 3, tenantsFilled: 1,
     furnished: false,
     leaseStart: "2026-08-01", leaseEnd: "2027-07-31", deposit: 2850,
     parking: "Street parking",
@@ -186,7 +193,7 @@ window.LISTINGS = [
     ],
     desc: "Won't lie to you — the finishes are nothing special. This isn't a renovation show, it's a rental. But the rent's lower than almost everything else on here, Post Rd shops are an easy walk, and Rick picks up the phone. Actually picks up. Something breaks, he's not ghosting you for three weeks. If you'd rather put the savings toward literally anything else, this is your house.",
     amenities: ["Close to shops", "Washer/dryer hookup"],
-    r: { campus: 16, campusDriveMin: 5, seagrapeWalkMin: 14, downtownWalkMin: 6, safety: 7, quiet: 6, conv: 9 }
+    r: { campus: 16, campusDriveMin: 5, seagrapeWalkMin: 14, downtownWalkMin: 6 }
   },
   {
     id: 8,
@@ -194,6 +201,7 @@ window.LISTINGS = [
     address: "45 Kings Highway Cutoff, Fairfield, CT",
     lat: 41.1668, lng: -73.2549,
     rent: 5100, beds: 6, baths: 3,
+    maxTenants: 6, tenantsFilled: 4,
     furnished: true,
     leaseStart: "2026-06-01", leaseEnd: "2027-05-31", deposit: 5100,
     parking: "Driveway, 5 spots",
@@ -210,7 +218,7 @@ window.LISTINGS = [
     ],
     desc: "One of the biggest group houses near campus, full stop. Two full kitchens — because six people sharing one stove by October is a friendship-ender — and a finished basement with real square footage. Built for the friend group that refuses to split up senior year.",
     amenities: ["Two kitchens", "Finished basement", "Furnished", "Large yard", "Off-street parking"],
-    r: { campus: 9, campusDriveMin: 3, seagrapeWalkMin: 13, downtownWalkMin: 17, safety: 7, quiet: 5, conv: 7 }
+    r: { campus: 9, campusDriveMin: 3, seagrapeWalkMin: 13, downtownWalkMin: 17 }
   },
   {
     id: 9,
@@ -218,6 +226,7 @@ window.LISTINGS = [
     address: "77 South Pine Creek Rd, Fairfield, CT",
     lat: 41.1391, lng: -73.2678,
     rent: 2200, beds: 2, baths: 1,
+    maxTenants: 2, tenantsFilled: 2,
     furnished: false,
     leaseStart: "2026-09-01", leaseEnd: "2027-08-31", deposit: 2200,
     parking: "1 driveway spot",
@@ -234,7 +243,7 @@ window.LISTINGS = [
     ],
     desc: "Small, sure. But the afternoon light in here is something else. Used to run the marsh trail behind South Pine Creek most mornings before class — if that's your thing, you'll love it here. Not close to much else, I won't pretend otherwise. Bring a bike or a car. What you get in return: real quiet, and a landlord in Ellen who's genuinely easy to deal with.",
     amenities: ["Updated kitchen", "Hardwood floors", "Storage shed", "Off-street parking"],
-    r: { campus: 22, campusDriveMin: 7, seagrapeWalkMin: 25, downtownWalkMin: 19, safety: 9, quiet: 9, conv: 4 }
+    r: { campus: 22, campusDriveMin: 7, seagrapeWalkMin: 25, downtownWalkMin: 19 }
   }
 ];
 

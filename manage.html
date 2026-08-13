@@ -23,7 +23,7 @@
       <a href="list-property.html" class="btn btn-primary btn-lg">Add a listing</a>
     </div>
 
-    <div class="stat-row">
+    <div class="stat-row stat-row-5">
       <div class="card stat-card">
         <div class="v">4</div>
         <div class="k">Active listings</div>
@@ -42,6 +42,10 @@
         <div class="v">3</div>
         <div class="k">Open maintenance</div>
         <div class="delta down">2 new this week</div>
+      </div>
+      <div class="card stat-card">
+        <div class="v" id="openSpotsStat">–</div>
+        <div class="k">Open spots</div>
       </div>
     </div>
 
@@ -89,7 +93,7 @@
       <div class="card">
         <div class="table-wrap">
           <table class="data-table">
-            <thead><tr><th>Listing</th><th>Rent</th><th>Views</th><th>Saves</th><th>Status</th></tr></thead>
+            <thead><tr><th>Listing</th><th>Rent</th><th>Views</th><th>Saves</th><th>Tenants</th><th>Status</th></tr></thead>
             <tbody id="listingsBody"></tbody>
           </table>
         </div>
@@ -105,6 +109,15 @@
 <script src="assets/app.js"></script>
 <script>
   var ICON = { wrench: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.8 2.8-2.1-2.1 2.9-2.7Z"/></svg>' };
+
+  var myListingIds = [1, 2, 3, 8];
+
+  /* ---------------- Header stats ---------------- */
+  var openSpots = myListingIds.reduce(function (sum, id) {
+    var l = window.LISTINGS.find(function (x) { return x.id === id; });
+    return sum + (l.maxTenants - l.tenantsFilled);
+  }, 0);
+  document.getElementById("openSpotsStat").textContent = openSpots;
 
   document.querySelectorAll(".tab").forEach(function (tab) {
     tab.addEventListener("click", function () {
@@ -186,12 +199,15 @@
   });
 
   /* ---------------- Listings ---------------- */
-  var myListingIds = [1, 2, 3, 8];
   document.getElementById("listingsBody").innerHTML = myListingIds.map(function (id) {
     var l = window.LISTINGS.find(function (x) { return x.id === id; });
     var views = 80 + id * 23;
     var saves = 4 + id * 2;
-    return "<tr><td>" + l.title + "</td><td>" + window.money(l.rent) + "</td><td>" + views + "</td><td>" + saves + '</td><td><span class="badge badge-green">Live</span></td></tr>';
+    var available = l.maxTenants - l.tenantsFilled;
+    var tenantsBadge = available > 0
+      ? '<span class="badge badge-blue">' + available + " of " + l.maxTenants + " tenants available</span>"
+      : '<span class="badge badge-gray">Full</span>';
+    return "<tr><td>" + l.title + "</td><td>" + window.money(l.rent) + "</td><td>" + views + "</td><td>" + saves + "</td><td>" + tenantsBadge + '</td><td><span class="badge badge-green">Live</span></td></tr>';
   }).join("");
 </script>
 </body>
