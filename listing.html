@@ -27,7 +27,6 @@
     cal: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg>',
     doc: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2h6l6 6v12a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Z"/><path d="M14 2v6h6"/></svg>',
     pin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-5.6-7-11a7 7 0 0 1 14 0c0 5.4-7 11-7 11Z"/><circle cx="12" cy="10" r="2.6"/></svg>',
-    car: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 16V9l2-4h14l2 4v7"/><path d="M3 16h18M6.5 19a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Zm11 0a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z"/></svg>',
     msg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-8.9 8.5 8.7 8.7 0 0 1-3.8-.9L3 20l1-5.2A8.4 8.4 0 0 1 12.5 3a8.4 8.4 0 0 1 8.5 8.5Z"/></svg>',
     heart: function (filled) { return '<svg viewBox="0 0 24 24" fill="' + (filled ? "currentColor" : "none") + '" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 8.6c0 5.6-8.8 10.9-8.8 10.9S3.2 14.2 3.2 8.6a5 5 0 0 1 9-3 5 5 0 0 1 8.6 3Z"/></svg>'; }
   };
@@ -116,12 +115,10 @@
         '<div class="detail-section">' +
           '<h2>Location ratings</h2>' +
           '<div class="card card-pad">' +
-            walkBar("Walk to campus", listing.r.campus) +
-            walkBar('Walk to <a href="https://www.seagrapect.com/" target="_blank" rel="noopener">The Seagrape</a>', listing.r.bars) +
-            walkBar("Walk to restaurants", listing.r.rest) +
-            walkBar("Walk to grocery", listing.r.grocery) +
+            walkBar('Walk to <a href="https://www.seagrapect.com/" target="_blank" rel="noopener">The Seagrape</a>', listing.r.seagrapeWalkMin) +
+            walkBar("Drive to campus", listing.r.campusDriveMin) +
+            walkBar('Walk to downtown<div class="bar-sublabel">(Old Post Tavern)</div>', listing.r.downtownWalkMin) +
           "</div>" +
-          '<div class="drive-note">' + ICON.car + listing.r.driveCampus + " min if you'd rather drive to campus</div>" +
           '<div class="card card-pad" style="margin-top:14px">' +
             scoreBar("Safety", listing.r.safety) +
             scoreBar("Quiet", listing.r.quiet) +

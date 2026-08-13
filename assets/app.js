@@ -319,7 +319,7 @@ function listingCard(listing) {
           ratingLine(listing) +
         "</div>" +
         '<div class="listing-neighborhood">' + streetName(listing.address) + "</div>" +
-        '<div class="listing-detail-line">' + listing.beds + " bd · " + listing.baths + " ba · " + listing.r.campus + " min to campus</div>" +
+        '<div class="listing-detail-line">' + listing.beds + " bd · " + listing.baths + " ba · " + listing.r.campusDriveMin + " min drive to campus · " + listing.r.seagrapeWalkMin + " min to The Seagrape</div>" +
         '<div class="listing-price"><strong>' + window.money(listing.rent) + "</strong><span> / mo</span></div>" +
       "</div>" +
     "</a>"
