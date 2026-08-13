@@ -303,6 +303,10 @@ function listingCard(listing) {
   var verifiedBadge = listing.verified
     ? '<span class="badge badge-green">' + ICONS.check + " Verified</span>"
     : "";
+  var displayName = listing.nickname || listing.title;
+  var formalTitleLine = listing.nickname
+    ? '<div class="listing-formal-title">' + listing.title + "</div>"
+    : "";
   return (
     '<a href="listing.html?id=' + listing.id + '" class="listing">' +
       '<div class="listing-photo" style="background:linear-gradient(135deg,' + listing.color + 'cc,' + listing.color + '66)">' +
@@ -315,9 +319,10 @@ function listingCard(listing) {
       "</div>" +
       '<div class="listing-body">' +
         '<div class="listing-title-row">' +
-          '<h3 class="listing-title">' + listing.title + "</h3>" +
+          '<h3 class="listing-title">' + displayName + "</h3>" +
           ratingLine(listing) +
         "</div>" +
+        formalTitleLine +
         '<div class="listing-neighborhood">' + streetName(listing.address) + "</div>" +
         '<div class="listing-detail-line">' + listing.beds + " bd · " + listing.baths + " ba · " + listing.r.campusDriveMin + " min drive to campus · " + listing.r.seagrapeWalkMin + " min to The Seagrape</div>" +
         '<div class="listing-price"><strong>' + window.money(listing.rent) + "</strong><span> / mo</span></div>" +

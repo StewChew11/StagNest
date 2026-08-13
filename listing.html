@@ -84,6 +84,8 @@
     : '<div class="reviews-empty">No reviews yet — be the first tenant to review this house after you move in.</div>';
 
   var initials = listing.landlord.split(" ").map(function (w) { return w[0]; }).join("").slice(0, 2);
+  var displayName = listing.nickname || listing.title;
+  var formalTitleLine = listing.nickname ? '<div class="detail-formal-title">' + listing.title + "</div>" : "";
 
   var html =
     '<div class="gallery-wrap">' +
@@ -92,7 +94,8 @@
     "</div>" +
     '<div class="detail-layout">' +
       '<div class="detail-main">' +
-        '<h1>' + listing.title + "</h1>" +
+        '<h1>' + displayName + "</h1>" +
+        formalTitleLine +
         '<div class="detail-addr">' + ICON.pin + listing.address + "</div>" +
         '<div class="detail-badges">' +
           ratingLine(listing) +
@@ -187,7 +190,7 @@
     "</div>";
 
   document.getElementById("listingRoot").innerHTML = html;
-  document.title = listing.title + " — StagNest";
+  document.title = displayName + " — StagNest";
 
   /* ---------------- Save / message ---------------- */
   function refreshSaveBtn() {

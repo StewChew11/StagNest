@@ -32,6 +32,10 @@
             <input type="text" class="input" id="pTitle" placeholder="e.g. Sunny 4-bed near North Benson" required>
           </div>
           <div class="field">
+            <label for="pNickname">House nickname (optional)</label>
+            <input type="text" class="input" id="pNickname" name="nickname" placeholder="A name students will remember — e.g. &quot;The Beach Shack&quot; or &quot;144 Reef&quot;">
+          </div>
+          <div class="field">
             <label for="pAddress">Address</label>
             <input type="text" class="input" id="pAddress" placeholder="Street address, Fairfield, CT" required>
           </div>
@@ -188,6 +192,7 @@
   document.getElementById("listingForm").addEventListener("submit", function (e) {
     e.preventDefault();
     var title = document.getElementById("pTitle").value.trim();
+    var nickname = document.getElementById("pNickname").value.trim();
     var address = document.getElementById("pAddress").value.trim();
     var rent = document.getElementById("pRent").value;
     var beds = document.getElementById("pBeds").value;
@@ -210,6 +215,7 @@
 
     var rows = [
       ["Title", title],
+      ["Nickname", nickname || "—"],
       ["Address", address],
       ["Rent", window.money(Number(rent)) + "/mo"],
       ["Beds / baths", beds + " bed, " + baths + " bath"],

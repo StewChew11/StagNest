@@ -72,6 +72,7 @@ window.LISTINGS = [
   {
     id: 3,
     title: "5-bed party-friendly on Jefferson",
+    nickname: "The Jeff",
     address: "27 Jefferson St, Fairfield, CT",
     lat: 41.1622, lng: -73.2578,
     rent: 4500, beds: 5, baths: 3,
@@ -117,6 +118,7 @@ window.LISTINGS = [
   {
     id: 5,
     title: "Beachside 4-bed, Fairfield Beach Rd",
+    nickname: "The Beach Shack",
     address: "612 Fairfield Beach Rd, Fairfield, CT",
     lat: 41.1425, lng: -73.2489,
     rent: 3900, beds: 4, baths: 2,
