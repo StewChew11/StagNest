@@ -244,46 +244,76 @@ window.LISTINGS = [
    "adding" someone just stores their id in a local group, no accounts.
    ------------------------------------------------------------------------- */
 window.ROOMMATES = [
-  { id: 1, name: "Maddie Sorensen", initials: "MS", gradYear: "'27", program: "Undergrad",
+  { id: 1, name: "Maddie Sorensen", initials: "MS", gradYear: "'28", program: "Undergrad",
+    email: "maddie.sorensen@demo.stagnest.app",
     budgetMin: 900, budgetMax: 1200, moveIn: "2026-09-01",
     bio: "Junior, marketing major. I keep a clean kitchen and I'm out the door for a run by 7am most days — looking for a house near the beach for senior year.",
     tags: ["Tidy", "Early riser", "Non-smoker"] },
-  { id: 2, name: "Jalen Okafor", initials: "JO", gradYear: "'26", program: "Undergrad",
+  { id: 2, name: "Jalen Okafor", initials: "JO", gradYear: "'27", program: "Undergrad",
+    email: "jalen.okafor@demo.stagnest.app",
     budgetMin: 1000, budgetMax: 1400, moveIn: "2026-09-01",
     bio: "Senior, finance. Split my time between the library and the gym. Down for a group house near North Benson if the rent works.",
     tags: ["Gym rat", "Studious", "Quiet"] },
-  { id: 3, name: "Priya Nair", initials: "PN", gradYear: "'28", program: "Undergrad",
+  { id: 3, name: "Priya Nair", initials: "PN", gradYear: "'29", program: "Undergrad",
+    email: "priya.nair@demo.stagnest.app",
     budgetMin: 850, budgetMax: 1100, moveIn: "2026-09-01",
     bio: "Sophomore, pre-med. I study a lot but I'm not a hermit — happy to hang on the porch after. Looking for people who don't mind quiet on weeknights.",
     tags: ["Studious", "Quiet", "Tidy"] },
-  { id: 4, name: "Tommy Reyes", initials: "TR", gradYear: "'27", program: "Undergrad",
+  { id: 4, name: "Tommy Reyes", initials: "TR", gradYear: "'28", program: "Undergrad",
+    email: "tommy.reyes@demo.stagnest.app",
     budgetMin: 950, budgetMax: 1300, moveIn: "2026-06-01",
     bio: "Junior, comm major. I'm the one who'll actually plan the Seagrape trips. Night owl — heads up if you're a light sleeper.",
     tags: ["Night owl", "Social"] },
-  { id: 5, name: "Grace Whitfield", initials: "GW", gradYear: "'26", program: "Undergrad",
+  { id: 5, name: "Grace Whitfield", initials: "GW", gradYear: "'27", program: "Undergrad",
+    email: "grace.whitfield@demo.stagnest.app",
     budgetMin: 1100, budgetMax: 1500, moveIn: "2026-09-01",
     bio: "Senior, psych. Looking for a beach-house crew for last year — I cook a lot, don't smoke, and I'm asleep by 11 most nights.",
     tags: ["Tidy", "Non-smoker", "Early riser"] },
-  { id: 6, name: "Devon Marsh", initials: "DM", gradYear: "'25", program: "Grad",
+  { id: 6, name: "Devon Marsh", initials: "DM", gradYear: "Grad student", program: "Grad",
+    email: "devon.marsh@demo.stagnest.app",
     budgetMin: 1300, budgetMax: 1700, moveIn: "2026-08-15",
     bio: "First-year MBA, already know the area. Looking for other grad students or serious upperclassmen near downtown.",
     tags: ["Quiet", "Studious", "Non-smoker"] },
-  { id: 7, name: "Sam Delacroix", initials: "SD", gradYear: "'27", program: "Undergrad",
+  { id: 7, name: "Sam Delacroix", initials: "SD", gradYear: "'28", program: "Undergrad",
+    email: "sam.delacroix@demo.stagnest.app",
     budgetMin: 900, budgetMax: 1250, moveIn: "2026-09-01",
     bio: "Junior. Hoping to bring my dog from home senior year if the house allows it — a pet-friendly place is a must for me.",
     tags: ["Pet-friendly", "Social", "Tidy"] },
-  { id: 8, name: "Olivia Chen", initials: "OC", gradYear: "'28", program: "Undergrad",
+  { id: 8, name: "Olivia Chen", initials: "OC", gradYear: "'30", program: "Undergrad",
+    email: "olivia.chen@demo.stagnest.app",
     budgetMin: 850, budgetMax: 1150, moveIn: "2026-09-01",
-    bio: "Sophomore, undecided. New to off-campus — just want a solid group and a landlord who actually answers. Easygoing either way.",
+    bio: "First-year, undecided major. Never done off-campus housing before — just want a solid group and a landlord who actually answers. Easygoing either way.",
     tags: ["Social", "Non-smoker"] },
-  { id: 9, name: "Marcus Bellweather", initials: "MB", gradYear: "'26", program: "Undergrad",
+  { id: 9, name: "Marcus Bellweather", initials: "MB", gradYear: "'27", program: "Undergrad",
+    email: "marcus.bellweather@demo.stagnest.app",
     budgetMin: 1000, budgetMax: 1400, moveIn: "2026-09-01",
     bio: "Senior, econ. Ran track, still train most mornings. Fine with a loud house as long as everyone's respectful about guests.",
     tags: ["Gym rat", "Early riser", "Social"] },
-  { id: 10, name: "Fiona Marsh", initials: "FM", gradYear: "'27", program: "Grad",
+  { id: 10, name: "Fiona Marsh", initials: "FM", gradYear: "'28", program: "Undergrad",
+    email: "fiona.marsh@demo.stagnest.app",
     budgetMin: 1150, budgetMax: 1450, moveIn: "2026-09-01",
-    bio: "Junior in the 4+1 accounting program, so I'll be around through grad school — looking for a group that wants a place for multiple years.",
+    bio: "Junior in the 4+1 accounting program, so I'll be here through grad school too — looking for a group that wants a place for multiple years.",
     tags: ["Studious", "Quiet", "Tidy"] }
 ];
 
 window.money = (n) => "$" + Number(n).toLocaleString();
+
+/* -------------------------------------------------------------------------
+   Inbox — front-end demo data. Seeds a couple of incoming group invites,
+   plus sample payment and landlord-message notifications. Read/unread and
+   accept/decline state are tracked separately in localStorage (see app.js);
+   this array only supplies the starting content.
+   ------------------------------------------------------------------------- */
+window.SAMPLE_INVITES = [4, 8];
+
+window.SAMPLE_PAYMENTS = [
+  { id: "pay-1", title: "Rent due Sep 1 — $1,000", sub: "Due to Fairfield Rentals LLC", date: "Aug 20, 2026" },
+  { id: "pay-2", title: "Jalen paid their share of rent", sub: "$1,000 received toward September rent", date: "Aug 18, 2026" },
+  { id: "pay-3", title: "Security deposit received", sub: "$1,000 confirmed by Ellen Ryder", date: "Aug 10, 2026" }
+];
+
+window.SAMPLE_MESSAGES = [
+  { id: "msg-1", title: "Fairfield Rentals LLC", sub: "Maintenance scheduled Thursday — someone will be by to check the water heater.", date: "Aug 12, 2026" },
+  { id: "msg-2", title: "Ellen Ryder", sub: "Just confirmed your lease start date — see you September 1st!", date: "Aug 6, 2026" },
+  { id: "msg-3", title: "Coastal Property Group", sub: "Thanks for your application — we'll have a decision by the end of the week.", date: "Jul 30, 2026" }
+];

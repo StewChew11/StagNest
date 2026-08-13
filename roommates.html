@@ -61,7 +61,7 @@
         <input type="text" class="group-name-input" id="groupNameInput" maxlength="60">
         <div class="group-count" id="groupCount"></div>
         <div class="group-members" id="groupMembers"></div>
-        <div class="group-empty hidden" id="groupEmptyMsg">Add roommates below to start building your group.</div>
+        <div class="group-empty hidden" id="groupEmptyMsg">Invite roommates below — they'll join your group once accepted in your <a href="inbox.html">inbox</a>.</div>
         <div class="group-budget-stats" id="groupStats"></div>
         <a href="browse.html" class="btn btn-primary btn-block" id="applyGroupBtn">Apply to a house together</a>
       </div>
@@ -135,6 +135,9 @@
   /* ---------------- Roommate grid ---------------- */
   function roommateCard(r) {
     var inGroup = isInGroup(r.id);
+    var invited = isInvited(r.id);
+    var btnClass = inGroup ? "btn-dark" : (invited ? "btn-ghost" : "btn-outline");
+    var btnLabel = inGroup ? (ICONS.check + " In your group") : (invited ? (ICONS.check + " Invited") : "Invite to group");
     var tagsHtml = r.tags.map(function (t) { return '<span class="chip">' + t + "</span>"; }).join("");
     return (
       '<div class="card card-pad roommate-card">' +
@@ -148,11 +151,26 @@
         '<div class="roommate-budget">' + window.money(r.budgetMin) + " – " + window.money(r.budgetMax) + '<span> / mo</span></div>' +
         '<div class="roommate-tags">' + tagsHtml + "</div>" +
         '<p class="roommate-bio">' + r.bio + "</p>" +
-        '<button type="button" class="btn ' + (inGroup ? "btn-dark" : "btn-outline") + ' btn-block" data-id="' + r.id + '">' +
-          (inGroup ? ICONS.check + " In your group" : "Add to group") +
+        '<button type="button" class="btn ' + btnClass + ' btn-block" data-id="' + r.id + '"' + (inGroup ? " disabled" : "") + '>' +
+          btnLabel +
         "</button>" +
       "</div>"
     );
+  }
+
+  /* ---------------- Invite email ---------------- */
+  // Static demo: this opens the visitor's own email client via a mailto:
+  // link so they can actually send the invite. Real automated email
+  // delivery + an in-app notification landing in the other student's
+  // inbox would need the backend app version.
+  function sendInviteEmail(r) {
+    var subject = "Join my StagNest house group";
+    var body = "Hey " + r.name.split(" ")[0] + ",\n\n" +
+      "I'm putting together a house-hunting group on StagNest and would love for you to join.\n\n" +
+      "Check it out here: https://stagnest.netlify.app/roommates.html\n\n" +
+      "— sent from StagNest";
+    var url = "mailto:" + r.email + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
+    window.location.href = url;
   }
 
   function applyFilters() {
@@ -179,15 +197,12 @@
 
   document.getElementById("roommateGrid").addEventListener("click", function (e) {
     var btn = e.target.closest("button[data-id]");
-    if (!btn) return;
+    if (!btn || isInGroup(Number(btn.dataset.id))) return;
     var id = Number(btn.dataset.id);
-    if (isInGroup(id)) {
-      removeFromGroup(id);
-    } else {
-      addToGroup(id);
-    }
+    var roommate = window.ROOMMATES.find(function (r) { return r.id === id; });
+    inviteToGroup(id);
+    sendInviteEmail(roommate);
     applyFilters();
-    renderGroupPanel();
   });
 
   /* ---------------- Group panel ---------------- */

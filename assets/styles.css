@@ -788,7 +788,7 @@ table.data-table { width: 100%; border-collapse: collapse; }
 .row-actions { display: flex; gap: 8px; }
 
 /* Applications / checklist */
-.app-item, .doc-item, .alert-item, .msg-item, .maint-item {
+.app-item, .doc-item, .alert-item, .msg-item, .maint-item, .invite-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -797,13 +797,33 @@ table.data-table { width: 100%; border-collapse: collapse; }
   gap: 16px;
   flex-wrap: wrap;
 }
-.app-item:last-child, .doc-item:last-child, .alert-item:last-child, .maint-item:last-child { border-bottom: none; }
+.app-item:last-child, .doc-item:last-child, .alert-item:last-child, .maint-item:last-child, .invite-item:last-child, .msg-item:last-child { border-bottom: none; }
 .item-main { display: flex; align-items: center; gap: 14px; }
 .item-ic { width: 40px; height: 40px; border-radius: 10px; background: var(--surface-2); display: flex; align-items: center; justify-content: center; color: var(--muted); flex-shrink: 0; }
 .item-ic svg { width: 19px; height: 19px; }
 .item-title { font-weight: 700; font-size: 14.5px; }
 .item-sub { font-size: 13px; color: var(--faint); margin-top: 2px; }
 .doc-item .item-ic.done { background: var(--emerald-bg); color: var(--emerald); }
+
+/* Inbox */
+.nav-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: var(--red);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+.unread-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--red); flex-shrink: 0; }
+.msg-item.unread .item-title, .invite-item .item-title { color: var(--ink); }
+.msg-item:not(.unread) { opacity: .68; }
 
 /* Rent panel */
 .balance-card { padding: 32px; text-align: center; }

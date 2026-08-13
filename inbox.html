@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Inbox — StagNest</title>
+<meta name="description" content="Group invitations, payment notifications, and landlord messages, all in one place.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700;9..144,900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+
+<!-- Front-end demo: invitations, payments, and messages below are all
+     sample content stored (and marked read / accepted / declined) in
+     localStorage. Real delivery to other people would need the backend
+     app version — see assets/app.js for the invite + inbox helpers. -->
+
+<header id="nav"></header>
+
+<main>
+  <div class="page-header container">
+    <h1>Inbox</h1>
+    <p>Group invitations, rent payment updates, and landlord messages, all in one place.</p>
+  </div>
+
+  <div class="account-shell container">
+    <div class="tabs">
+      <div class="tab active" data-tab="invitations">Invitations</div>
+      <div class="tab" data-tab="payments">Payments</div>
+      <div class="tab" data-tab="messages">Messages</div>
+    </div>
+
+    <!-- Invitations -->
+    <div class="tab-panel active" id="panel-invitations">
+      <div class="card" id="invitationsList"></div>
+      <div class="empty-state hidden" id="invitationsEmpty">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+        <h3>No pending invitations</h3>
+        <p>Invite someone from the <a href="roommates.html">roommate finder</a> to get started.</p>
+      </div>
+    </div>
+
+    <!-- Payments -->
+    <div class="tab-panel" id="panel-payments">
+      <div class="card" id="paymentsList"></div>
+    </div>
+
+    <!-- Messages -->
+    <div class="tab-panel" id="panel-messages">
+      <div class="card" id="messagesList"></div>
+    </div>
+
+  </div>
+</main>
+
+<footer id="footer"></footer>
+
+<script src="assets/data.js"></script>
+<script src="assets/app.js"></script>
+<script>
+  var ICON = {
+    doc: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2h6l6 6v12a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Z"/><path d="M14 2v6h6"/></svg>',
+    msg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-8.9 8.5 8.7 8.7 0 0 1-3.8-.9L3 20l1-5.2A8.4 8.4 0 0 1 12.5 3a8.4 8.4 0 0 1 8.5 8.5Z"/></svg>'
+  };
+
+  /* ---------------- Tabs ---------------- */
+  document.querySelectorAll(".tab").forEach(function (tab) {
+    tab.addEventListener("click", function () {
+      document.querySelectorAll(".tab").forEach(function (t) { t.classList.remove("active"); });
+      document.querySelectorAll(".tab-panel").forEach(function (p) { p.classList.remove("active"); });
+      tab.classList.add("active");
+      document.getElementById("panel-" + tab.dataset.tab).classList.add("active");
+    });
+  });
+
+  /* ---------------- Invitations ---------------- */
+  function renderInvitations() {
+    var invites = getInvites();
+    var roommates = invites.map(function (id) {
+      return window.ROOMMATES.find(function (r) { return r.id === id; });
+    }).filter(Boolean);
+
+    var list = document.getElementById("invitationsList");
+    var empty = document.getElementById("invitationsEmpty");
+
+    if (roommates.length === 0) {
+      list.innerHTML = "";
+      empty.classList.remove("hidden");
+      return;
+    }
+    empty.classList.add("hidden");
+    list.innerHTML = roommates.map(function (r) {
+      return '<div class="invite-item">' +
+        '<div class="item-main">' +
+          '<div class="landlord-avatar sm">' + r.initials + "</div>" +
+          '<div><div class="item-title">' + r.name + '</div><div class="item-sub">Invited to join your house-hunting group</div></div>' +
+        "</div>" +
+        '<div class="row-actions">' +
+          '<button class="btn btn-primary btn-sm" data-accept="' + r.id + '">Accept</button>' +
+          '<button class="btn btn-ghost btn-sm" data-decline="' + r.id + '">Decline</button>' +
+        "</div>" +
+      "</div>";
+    }).join("");
+  }
+  document.getElementById("invitationsList").addEventListener("click", function (e) {
+    var acceptBtn = e.target.closest("button[data-accept]");
+    var declineBtn = e.target.closest("button[data-decline]");
+    if (acceptBtn) acceptInvite(Number(acceptBtn.dataset.accept));
+    if (declineBtn) declineInvite(Number(declineBtn.dataset.decline));
+    if (acceptBtn || declineBtn) {
+      renderInvitations();
+      renderChrome();
+    }
+  });
+  renderInvitations();
+
+  /* ---------------- Payments ---------------- */
+  function renderPayments() {
+    var list = document.getElementById("paymentsList");
+    list.innerHTML = window.SAMPLE_PAYMENTS.map(function (p) {
+      var unread = !isRead(p.id);
+      return '<div class="msg-item' + (unread ? " unread" : "") + '" data-id="' + p.id + '">' +
+        '<div class="item-main">' +
+          '<div class="item-ic">' + ICON.doc + "</div>" +
+          '<div><div class="item-title">' + p.title + '</div><div class="item-sub">' + p.sub + " · " + p.date + "</div></div>" +
+        "</div>" +
+        (unread ? '<span class="unread-dot"></span>' : "") +
+      "</div>";
+    }).join("");
+  }
+  document.getElementById("paymentsList").addEventListener("click", function (e) {
+    var row = e.target.closest(".msg-item");
+    if (!row) return;
+    markRead(row.dataset.id);
+    renderPayments();
+    renderChrome();
+  });
+  renderPayments();
+
+  /* ---------------- Messages ---------------- */
+  function renderMessages() {
+    var list = document.getElementById("messagesList");
+    list.innerHTML = window.SAMPLE_MESSAGES.map(function (m) {
+      var unread = !isRead(m.id);
+      return '<div class="msg-item' + (unread ? " unread" : "") + '" data-id="' + m.id + '">' +
+        '<div class="item-main">' +
+          '<div class="item-ic">' + ICON.msg + "</div>" +
+          '<div><div class="item-title">' + m.title + '</div><div class="item-sub">' + m.sub + " · " + m.date + "</div></div>" +
+        "</div>" +
+        (unread ? '<span class="unread-dot"></span>' : "") +
+      "</div>";
+    }).join("");
+  }
+  document.getElementById("messagesList").addEventListener("click", function (e) {
+    var row = e.target.closest(".msg-item");
+    if (!row) return;
+    markRead(row.dataset.id);
+    renderMessages();
+    renderChrome();
+  });
+  renderMessages();
+</script>
+</body>
+</html>

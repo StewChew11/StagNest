@@ -108,6 +108,7 @@ function ratingLine(listing) {
 var NAV_LINKS = [
   { href: "browse.html", label: "Browse" },
   { href: "roommates.html", label: "Roommates" },
+  { href: "inbox.html", label: "Inbox" },
   { href: "about.html", label: "About" },
   { href: "list-property.html", label: "List your property" }
 ];
@@ -123,13 +124,16 @@ function renderChrome() {
   var page = currentPage();
 
   if (navEl) {
+    var inboxBadge = navBadgeHtml();
     var linksHtml = NAV_LINKS.map(function (l) {
       var active = l.href === page ? " active" : "";
-      return '<a href="' + l.href + '" class="' + active.trim() + '">' + l.label + "</a>";
+      var badge = l.href === "inbox.html" ? inboxBadge : "";
+      return '<a href="' + l.href + '" class="' + active.trim() + '">' + l.label + badge + "</a>";
     }).join("");
 
     var drawerHtml = NAV_LINKS.map(function (l) {
-      return '<a href="' + l.href + '">' + l.label + "</a>";
+      var badge = l.href === "inbox.html" ? inboxBadge : "";
+      return '<a href="' + l.href + '">' + l.label + badge + "</a>";
     }).join("");
 
     navEl.innerHTML =
@@ -184,6 +188,7 @@ function renderChrome() {
             '<div class="footer-col"><h4>Explore</h4><ul>' +
               '<li><a href="browse.html">Browse listings</a></li>' +
               '<li><a href="roommates.html">Find roommates</a></li>' +
+              '<li><a href="inbox.html">Inbox</a></li>' +
               '<li><a href="about.html">About StagNest</a></li>' +
               '<li><a href="list-property.html">List your property</a></li>' +
             '</ul></div>' +
@@ -326,6 +331,105 @@ function setGroupName(name) {
   group.name = name || "My group";
   saveGroup(group);
   return group;
+}
+
+/* -------------------------------------------------------------------------
+   Group invites (localStorage) — a roommate only becomes a group member
+   once their invite is accepted in the inbox. "Inviting" someone from the
+   roommate finder never adds them directly; it just queues a pending
+   invite here and opens a mailto: link (see roommates.html). Real
+   automated email + two-way notifications need the backend app version;
+   this static demo treats accepting your own sent invite in the inbox as
+   the stand-in for the other student confirming.
+   ------------------------------------------------------------------------- */
+var INVITES_KEY = "stagnest_group_invites";
+
+function getInvites() {
+  try {
+    var raw = localStorage.getItem(INVITES_KEY);
+    if (raw === null) {
+      var seeded = (window.SAMPLE_INVITES || []).slice();
+      localStorage.setItem(INVITES_KEY, JSON.stringify(seeded));
+      return seeded;
+    }
+    return JSON.parse(raw);
+  } catch (e) {
+    return [];
+  }
+}
+
+function saveInvites(list) {
+  localStorage.setItem(INVITES_KEY, JSON.stringify(list));
+}
+
+function isInvited(id) {
+  return getInvites().indexOf(Number(id)) !== -1;
+}
+
+function inviteToGroup(id) {
+  id = Number(id);
+  var invites = getInvites();
+  if (invites.indexOf(id) === -1 && !isInGroup(id)) invites.push(id);
+  saveInvites(invites);
+  return invites;
+}
+
+function acceptInvite(id) {
+  id = Number(id);
+  var invites = getInvites();
+  var idx = invites.indexOf(id);
+  if (idx !== -1) invites.splice(idx, 1);
+  saveInvites(invites);
+  addToGroup(id);
+}
+
+function declineInvite(id) {
+  id = Number(id);
+  var invites = getInvites();
+  var idx = invites.indexOf(id);
+  if (idx !== -1) invites.splice(idx, 1);
+  saveInvites(invites);
+}
+
+/* -------------------------------------------------------------------------
+   Inbox read/unread (localStorage) — payments and landlord-message
+   notifications are static sample content (window.SAMPLE_PAYMENTS /
+   window.SAMPLE_MESSAGES in data.js); only which ones have been opened
+   is tracked here, keyed by each item's stable id.
+   ------------------------------------------------------------------------- */
+var INBOX_READ_KEY = "stagnest_inbox_read";
+
+function getReadIds() {
+  try {
+    var raw = localStorage.getItem(INBOX_READ_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch (e) {
+    return [];
+  }
+}
+
+function markRead(id) {
+  var read = getReadIds();
+  if (read.indexOf(id) === -1) {
+    read.push(id);
+    localStorage.setItem(INBOX_READ_KEY, JSON.stringify(read));
+  }
+}
+
+function isRead(id) {
+  return getReadIds().indexOf(id) !== -1;
+}
+
+function getInboxUnreadCount() {
+  var read = getReadIds();
+  var unreadPayments = (window.SAMPLE_PAYMENTS || []).filter(function (p) { return read.indexOf(p.id) === -1; }).length;
+  var unreadMessages = (window.SAMPLE_MESSAGES || []).filter(function (m) { return read.indexOf(m.id) === -1; }).length;
+  return getInvites().length + unreadPayments + unreadMessages;
+}
+
+function navBadgeHtml() {
+  var count = getInboxUnreadCount();
+  return count > 0 ? '<span class="nav-badge">' + count + "</span>" : "";
 }
 
 function onSave(btn, id, evt) {
