@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Find roommates — StagNest</title>
+<meta name="description" content="Find roommates near Fairfield University, build a house-hunting group, and apply to a listing together.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700;9..144,900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+
+<!-- This is the front-end demo version: "adding" someone to your group just
+     stores their id in localStorage. Real roommate matching + messaging
+     between students would need the backend app version. -->
+
+<header id="nav"></header>
+
+<main>
+  <div class="page-header container">
+    <h1>Find your people, then find your house together</h1>
+    <p>Browse students looking for roommates near Fairfield, build a group, and apply to a listing together with rent split evenly.</p>
+  </div>
+
+  <div class="container">
+    <div class="card card-pad roommate-filter-row">
+      <div class="filter-group">
+        <label class="title">Grad year</label>
+        <div class="pill-row" id="fGradYear"></div>
+      </div>
+      <div class="filter-group">
+        <label class="title">Budget per month</label>
+        <div class="row-2">
+          <input type="number" class="input" id="fBudgetMin" placeholder="Min" min="0" step="50">
+          <input type="number" class="input" id="fBudgetMax" placeholder="Max" min="0" step="50">
+        </div>
+      </div>
+      <div class="filter-group">
+        <label class="title">Lifestyle</label>
+        <div class="pill-row" id="fTags"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container roommates-layout">
+
+    <div>
+      <div class="results-count" id="resultsCount" style="margin-bottom:14px"></div>
+      <div class="roommate-grid" id="roommateGrid"></div>
+      <div class="empty-state hidden" id="roommateEmpty">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        <h3>No students match those filters</h3>
+        <p>Try widening your budget range or clearing a lifestyle tag.</p>
+      </div>
+    </div>
+
+    <aside>
+      <div class="card card-pad group-panel">
+        <input type="text" class="group-name-input" id="groupNameInput" maxlength="60">
+        <div class="group-count" id="groupCount"></div>
+        <div class="group-members" id="groupMembers"></div>
+        <div class="group-empty hidden" id="groupEmptyMsg">Add roommates below to start building your group.</div>
+        <div class="group-budget-stats" id="groupStats"></div>
+        <a href="browse.html" class="btn btn-primary btn-block" id="applyGroupBtn">Apply to a house together</a>
+      </div>
+    </aside>
+
+  </div>
+</main>
+
+<footer id="footer"></footer>
+
+<script src="assets/data.js"></script>
+<script src="assets/app.js"></script>
+<script>
+  var ALL_TAGS = [];
+  window.ROOMMATES.forEach(function (r) {
+    r.tags.forEach(function (t) { if (ALL_TAGS.indexOf(t) === -1) ALL_TAGS.push(t); });
+  });
+  var ALL_GRAD_YEARS = [];
+  window.ROOMMATES.forEach(function (r) {
+    if (ALL_GRAD_YEARS.indexOf(r.gradYear) === -1) ALL_GRAD_YEARS.push(r.gradYear);
+  });
+  ALL_GRAD_YEARS.sort();
+
+  var state = { gradYear: null, budgetMin: null, budgetMax: null, tags: [] };
+
+  /* ---------------- Filter chips ---------------- */
+  document.getElementById("fGradYear").innerHTML =
+    '<span class="chip chip-toggle active" data-val="">Any</span>' +
+    ALL_GRAD_YEARS.map(function (y) {
+      return '<span class="chip chip-toggle" data-val="' + y + '">' + y + "</span>";
+    }).join("");
+
+  document.getElementById("fGradYear").addEventListener("click", function (e) {
+    var chip = e.target.closest(".chip-toggle");
+    if (!chip) return;
+    this.querySelectorAll(".chip-toggle").forEach(function (c) { c.classList.remove("active"); });
+    chip.classList.add("active");
+    state.gradYear = chip.dataset.val || null;
+    applyFilters();
+  });
+
+  document.getElementById("fTags").innerHTML = ALL_TAGS.map(function (t) {
+    return '<span class="chip chip-toggle" data-val="' + t + '">' + t + "</span>";
+  }).join("");
+
+  document.getElementById("fTags").addEventListener("click", function (e) {
+    var chip = e.target.closest(".chip-toggle");
+    if (!chip) return;
+    chip.classList.toggle("active");
+    var val = chip.dataset.val;
+    var idx = state.tags.indexOf(val);
+    if (chip.classList.contains("active")) {
+      if (idx === -1) state.tags.push(val);
+    } else if (idx !== -1) {
+      state.tags.splice(idx, 1);
+    }
+    applyFilters();
+  });
+
+  var budgetMinInput = document.getElementById("fBudgetMin");
+  var budgetMaxInput = document.getElementById("fBudgetMax");
+  budgetMinInput.addEventListener("input", function () {
+    state.budgetMin = this.value ? Number(this.value) : null;
+    applyFilters();
+  });
+  budgetMaxInput.addEventListener("input", function () {
+    state.budgetMax = this.value ? Number(this.value) : null;
+    applyFilters();
+  });
+
+  /* ---------------- Roommate grid ---------------- */
+  function roommateCard(r) {
+    var inGroup = isInGroup(r.id);
+    var tagsHtml = r.tags.map(function (t) { return '<span class="chip">' + t + "</span>"; }).join("");
+    return (
+      '<div class="card card-pad roommate-card">' +
+        '<div class="roommate-card-head">' +
+          '<div class="landlord-avatar">' + r.initials + "</div>" +
+          '<div>' +
+            '<div class="name">' + r.name + "</div>" +
+            '<div class="meta">' + r.gradYear + " · " + r.program + "</div>" +
+          "</div>" +
+        "</div>" +
+        '<div class="roommate-budget">' + window.money(r.budgetMin) + " – " + window.money(r.budgetMax) + '<span> / mo</span></div>' +
+        '<div class="roommate-tags">' + tagsHtml + "</div>" +
+        '<p class="roommate-bio">' + r.bio + "</p>" +
+        '<button type="button" class="btn ' + (inGroup ? "btn-dark" : "btn-outline") + ' btn-block" data-id="' + r.id + '">' +
+          (inGroup ? ICONS.check + " In your group" : "Add to group") +
+        "</button>" +
+      "</div>"
+    );
+  }
+
+  function applyFilters() {
+    var results = window.ROOMMATES.filter(function (r) {
+      if (state.gradYear && r.gradYear !== state.gradYear) return false;
+      if (state.budgetMin != null && r.budgetMax < state.budgetMin) return false;
+      if (state.budgetMax != null && r.budgetMin > state.budgetMax) return false;
+      if (state.tags.length && !state.tags.every(function (t) { return r.tags.indexOf(t) !== -1; })) return false;
+      return true;
+    });
+
+    var grid = document.getElementById("roommateGrid");
+    var empty = document.getElementById("roommateEmpty");
+    document.getElementById("resultsCount").textContent = results.length + " student" + (results.length === 1 ? "" : "s") + " looking for roommates";
+
+    if (results.length === 0) {
+      grid.innerHTML = "";
+      empty.classList.remove("hidden");
+    } else {
+      empty.classList.add("hidden");
+      grid.innerHTML = results.map(roommateCard).join("");
+    }
+  }
+
+  document.getElementById("roommateGrid").addEventListener("click", function (e) {
+    var btn = e.target.closest("button[data-id]");
+    if (!btn) return;
+    var id = Number(btn.dataset.id);
+    if (isInGroup(id)) {
+      removeFromGroup(id);
+    } else {
+      addToGroup(id);
+    }
+    applyFilters();
+    renderGroupPanel();
+  });
+
+  /* ---------------- Group panel ---------------- */
+  var groupNameInput = document.getElementById("groupNameInput");
+  groupNameInput.addEventListener("change", function () {
+    setGroupName(this.value.trim());
+    renderGroupPanel();
+  });
+
+  function renderGroupPanel() {
+    var group = getGroup();
+    groupNameInput.value = group.name;
+
+    var members = window.ROOMMATES.filter(function (r) { return group.memberIds.indexOf(r.id) !== -1; });
+
+    document.getElementById("groupCount").textContent =
+      members.length + " member" + (members.length === 1 ? "" : "s") + " so far";
+
+    document.getElementById("groupMembers").innerHTML = members.map(function (m) {
+      return '<div class="group-member-row">' +
+        '<div class="landlord-avatar sm">' + m.initials + "</div>" +
+        '<div class="name">' + m.name + "</div>" +
+        '<span class="rm" data-id="' + m.id + '">' + ICONS.close + "</span>" +
+      "</div>";
+    }).join("");
+
+    document.getElementById("groupEmptyMsg").classList.toggle("hidden", members.length > 0);
+
+    var statsEl = document.getElementById("groupStats");
+    var applyBtn = document.getElementById("applyGroupBtn");
+    if (members.length === 0) {
+      statsEl.innerHTML = "";
+      applyBtn.classList.add("hidden");
+    } else {
+      var combinedMin = members.reduce(function (sum, m) { return sum + m.budgetMin; }, 0);
+      var combinedMax = members.reduce(function (sum, m) { return sum + m.budgetMax; }, 0);
+      var avg = Math.round(members.reduce(function (sum, m) { return sum + (m.budgetMin + m.budgetMax) / 2; }, 0) / members.length);
+      statsEl.innerHTML =
+        '<div class="stat"><div class="v">' + window.money(combinedMin) + '–' + window.money(combinedMax) + '</div><div class="k">Combined budget</div></div>' +
+        '<div class="stat"><div class="v">' + window.money(avg) + '</div><div class="k">Average budget</div></div>';
+      applyBtn.classList.remove("hidden");
+    }
+  }
+
+  document.getElementById("groupMembers").addEventListener("click", function (e) {
+    var rm = e.target.closest(".rm");
+    if (!rm) return;
+    removeFromGroup(Number(rm.dataset.id));
+    renderGroupPanel();
+    applyFilters();
+  });
+
+  applyFilters();
+  renderGroupPanel();
+</script>
+</body>
+</html>

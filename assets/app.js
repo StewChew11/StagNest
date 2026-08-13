@@ -107,6 +107,7 @@ function ratingLine(listing) {
 
 var NAV_LINKS = [
   { href: "browse.html", label: "Browse" },
+  { href: "roommates.html", label: "Roommates" },
   { href: "about.html", label: "About" },
   { href: "list-property.html", label: "List your property" }
 ];
@@ -182,6 +183,7 @@ function renderChrome() {
             '</div>' +
             '<div class="footer-col"><h4>Explore</h4><ul>' +
               '<li><a href="browse.html">Browse listings</a></li>' +
+              '<li><a href="roommates.html">Find roommates</a></li>' +
               '<li><a href="about.html">About StagNest</a></li>' +
               '<li><a href="list-property.html">List your property</a></li>' +
             '</ul></div>' +
@@ -277,6 +279,53 @@ function toggleFav(id) {
   }
   localStorage.setItem(FAV_KEY, JSON.stringify(favs));
   return favs.indexOf(id) !== -1;
+}
+
+/* -------------------------------------------------------------------------
+   Roommate group (localStorage) — front-end demo state only. Real
+   roommate matching + messaging would need the backend app version.
+   ------------------------------------------------------------------------- */
+var GROUP_KEY = "stagnest_group";
+
+function getGroup() {
+  try {
+    var raw = localStorage.getItem(GROUP_KEY);
+    return raw ? JSON.parse(raw) : { name: "My group", memberIds: [] };
+  } catch (e) {
+    return { name: "My group", memberIds: [] };
+  }
+}
+
+function saveGroup(group) {
+  localStorage.setItem(GROUP_KEY, JSON.stringify(group));
+}
+
+function isInGroup(id) {
+  return getGroup().memberIds.indexOf(Number(id)) !== -1;
+}
+
+function addToGroup(id) {
+  id = Number(id);
+  var group = getGroup();
+  if (group.memberIds.indexOf(id) === -1) group.memberIds.push(id);
+  saveGroup(group);
+  return group;
+}
+
+function removeFromGroup(id) {
+  id = Number(id);
+  var group = getGroup();
+  var idx = group.memberIds.indexOf(id);
+  if (idx !== -1) group.memberIds.splice(idx, 1);
+  saveGroup(group);
+  return group;
+}
+
+function setGroupName(name) {
+  var group = getGroup();
+  group.name = name || "My group";
+  saveGroup(group);
+  return group;
 }
 
 function onSave(btn, id, evt) {

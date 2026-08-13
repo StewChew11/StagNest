@@ -101,6 +101,32 @@
   var displayName = listing.nickname || listing.title;
   var formalTitleLine = listing.nickname ? '<div class="detail-formal-title">' + listing.title + "</div>" : "";
 
+  /* ---------------- Apply as a group ---------------- */
+  // Front-end demo: the group lives in localStorage. Real group applications
+  // and roommate messaging would need the backend app version.
+  var group = getGroup();
+  var groupMembers = window.ROOMMATES.filter(function (r) { return group.memberIds.indexOf(r.id) !== -1; });
+  var groupSectionHtml;
+  if (groupMembers.length > 0) {
+    var splitCount = groupMembers.length + 1;
+    var perPerson = Math.round(listing.rent / splitCount);
+    groupSectionHtml =
+      '<div class="sidebar-group-title">Apply as a group</div>' +
+      '<div class="group-members" style="margin-bottom:10px">' +
+        groupMembers.map(function (m) {
+          return '<div class="group-member-row"><div class="landlord-avatar sm">' + m.initials + '</div><div class="name">' + m.name + "</div></div>";
+        }).join("") +
+        '<div class="group-member-row"><div class="landlord-avatar sm">Me</div><div class="name">You</div></div>' +
+      "</div>" +
+      '<div class="price-line"><span>Rent per person (' + splitCount + ' people)</span><span>' + window.money(perPerson) + '</span></div>' +
+      '<a href="roommates.html" class="btn btn-outline btn-block" style="margin-top:10px">Manage your group</a>';
+  } else {
+    groupSectionHtml =
+      '<div class="sidebar-group-title">Apply as a group</div>' +
+      '<p style="font-size:13.5px; color:var(--muted); margin-bottom:12px">Split the rent with roommates — build a group first, then come back here.</p>' +
+      '<a href="roommates.html" class="btn btn-outline btn-block">Find roommates</a>';
+  }
+
   var html =
     '<div class="gallery-wrap">' +
       '<div class="photo-grid" id="photoGrid">' + photosHtml + "</div>" +
@@ -176,6 +202,8 @@
             '<button class="btn btn-outline btn-block" id="saveBtn"></button>' +
             '<button class="btn btn-ghost btn-block" id="msgBtn">' + ICON.msg + " Message landlord</button>" +
           "</div>" +
+          '<hr class="sidebar-divider">' +
+          '<div class="sidebar-group-section">' + groupSectionHtml + "</div>" +
           '<hr class="sidebar-divider">' +
           '<div class="landlord-row" style="margin-bottom:14px; padding-bottom:14px">' +
             '<div class="landlord-avatar">' + initials + '</div>' +

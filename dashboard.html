@@ -27,6 +27,7 @@
       <div class="tab active" data-tab="saved">Saved</div>
       <div class="tab" data-tab="applications">Applications</div>
       <div class="tab" data-tab="documents">Documents</div>
+      <div class="tab" data-tab="group">My Group</div>
       <div class="tab" data-tab="alerts">Alerts</div>
     </div>
 
@@ -49,6 +50,11 @@
     <!-- Documents -->
     <div class="tab-panel" id="panel-documents">
       <div class="card" id="documentsList"></div>
+    </div>
+
+    <!-- My Group -->
+    <div class="tab-panel" id="panel-group">
+      <div class="card card-pad" id="groupCard"></div>
     </div>
 
     <!-- Alerts -->
@@ -141,6 +147,42 @@
     d.done = !d.done;
     renderDocuments();
   });
+
+  /* ---------------- My Group ---------------- */
+  // Front-end demo: group state lives in localStorage. Real roommate
+  // matching + messaging would need the backend app version.
+  function renderGroup() {
+    var group = getGroup();
+    var members = window.ROOMMATES.filter(function (r) { return group.memberIds.indexOf(r.id) !== -1; });
+    var card = document.getElementById("groupCard");
+    if (members.length === 0) {
+      card.innerHTML =
+        '<div class="empty-state">' +
+          ICON.home +
+          '<h3>No group yet</h3>' +
+          '<p>Head to the roommate finder to add people to your house-hunting group.</p>' +
+          '<a href="roommates.html" class="btn btn-primary" style="margin-top:16px">Find roommates</a>' +
+        '</div>';
+      return;
+    }
+    var combinedMin = members.reduce(function (sum, m) { return sum + m.budgetMin; }, 0);
+    var combinedMax = members.reduce(function (sum, m) { return sum + m.budgetMax; }, 0);
+    card.innerHTML =
+      '<h3 style="margin-bottom:4px">' + group.name + "</h3>" +
+      '<p class="muted" style="margin-bottom:20px">' + members.length + " member" + (members.length === 1 ? "" : "s") + "</p>" +
+      '<div class="group-members" style="margin-bottom:18px">' +
+        members.map(function (m) {
+          return '<div class="group-member-row">' +
+            '<div class="landlord-avatar sm">' + m.initials + "</div>" +
+            '<div class="name">' + m.name + "</div>" +
+            '<span style="font-size:13px;color:var(--muted)">' + window.money(m.budgetMin) + "–" + window.money(m.budgetMax) + "</span>" +
+          "</div>";
+        }).join("") +
+      "</div>" +
+      '<div class="price-line total"><span>Combined budget</span><span>' + window.money(combinedMin) + "–" + window.money(combinedMax) + "</span></div>" +
+      '<a href="roommates.html" class="btn btn-outline btn-block" style="margin-top:18px">Keep browsing roommates</a>';
+  }
+  renderGroup();
 
   /* ---------------- Alerts ---------------- */
   var alerts = [
