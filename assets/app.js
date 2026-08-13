@@ -107,10 +107,10 @@ function ratingLine(listing) {
 
 var NAV_LINKS = [
   { href: "browse.html", label: "Browse" },
-  { href: "roommates.html", label: "Roommates" },
-  { href: "inbox.html", label: "Inbox" },
   { href: "about.html", label: "About" },
-  { href: "list-property.html", label: "List your property" }
+  { href: "list-property.html", label: "List your property" },
+  { href: "roommates.html", label: "Roommates" },
+  { href: "inbox.html", label: "Inbox" }
 ];
 
 function currentPage() {
