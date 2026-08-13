@@ -50,7 +50,6 @@ var ICONS = {
 var AMENITY_ICONS = {
   laundry: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="12" cy="13" r="5"/><circle cx="8" cy="6.3" r=".6" fill="currentColor" stroke="none"/><circle cx="11" cy="6.3" r=".6" fill="currentColor" stroke="none"/></svg>',
   parking: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 16V9l2-4h14l2 4v7"/><path d="M3 16h18M6.5 19a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Zm11 0a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z"/></svg>',
-  pet: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="9" r="1.6"/><circle cx="12" cy="6.5" r="1.6"/><circle cx="17" cy="9" r="1.6"/><path d="M12 12c-3 0-5.5 2.2-5.5 4.5 0 1.7 1.5 2.5 3 2 1-.3 1.6-.5 2.5-.5s1.5.2 2.5.5c1.5.5 3-.3 3-2C17.5 14.2 15 12 12 12Z"/></svg>',
   kitchen: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16v3a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5v-3Z"/><path d="M2 12h20M7 12V8a5 5 0 0 1 10 0v4"/></svg>',
   air: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M4.5 6l15 12M19.5 6l-15 12M2 12h20"/></svg>',
   yard: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 6 11h3l-4 7h5v4h4v-4h5l-4-7h3L12 2Z"/></svg>',
@@ -67,7 +66,6 @@ var AMENITY_ICON_RULES = [
   [/dishwasher/i, "kitchen"],
   [/laundry|washer/i, "laundry"],
   [/parking|garage/i, "parking"],
-  [/pet/i, "pet"],
   [/kitchen/i, "kitchen"],
   [/air|thermostat/i, "air"],
   [/yard|porch|deck/i, "yard"],

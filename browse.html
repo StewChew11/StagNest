@@ -17,7 +17,7 @@
 <main>
   <div class="page-header container">
     <h1>Browse houses near Fairfield</h1>
-    <p>Filter by what matters — rent, beds, and walk time to campus — then compare on the list or the map.</p>
+    <p>Filter by what actually matters — rent, beds, walk time to campus — then pull up the map and see where everything really sits.</p>
   </div>
 
   <div class="container">
@@ -56,13 +56,9 @@
         </div>
 
         <div class="filter-group">
-          <div class="switch-row" style="margin-bottom:14px">
+          <div class="switch-row">
             <span class="label">Furnished</span>
             <span class="switch" id="fFurnished"></span>
-          </div>
-          <div class="switch-row">
-            <span class="label">Pets allowed</span>
-            <span class="switch" id="fPets"></span>
           </div>
         </div>
 
@@ -115,7 +111,7 @@
     { key: "under-3k", label: "Under $3k", test: function (l) { return l.rent < 3000; } }
   ];
 
-  var state = { rentMin: null, rentMax: null, beds: 0, walk: 25, furnished: false, pets: false, categories: [] };
+  var state = { rentMin: null, rentMax: null, beds: 0, walk: 25, furnished: false, categories: [] };
   var currentResults = window.LISTINGS.slice();
 
   document.getElementById("categoryRow").innerHTML = CATEGORIES.map(function (c) {
@@ -142,7 +138,6 @@
       if (state.beds > 0 && l.beds < state.beds) return false;
       if (l.r.campus > state.walk) return false;
       if (state.furnished && !l.furnished) return false;
-      if (state.pets && !l.pets) return false;
       if (state.categories.length) {
         var matchesAll = state.categories.every(function (key) {
           var cat = CATEGORIES.find(function (c) { return c.key === key; });
@@ -227,18 +222,16 @@
     });
   }
   wireSwitch("fFurnished", "furnished");
-  wireSwitch("fPets", "pets");
 
   // Clear
   document.getElementById("fClear").addEventListener("click", function () {
-    state = { rentMin: null, rentMax: null, beds: 0, walk: 25, furnished: false, pets: false, categories: [] };
+    state = { rentMin: null, rentMax: null, beds: 0, walk: 25, furnished: false, categories: [] };
     document.getElementById("fRentMin").value = "";
     document.getElementById("fRentMax").value = "";
     document.querySelectorAll("#fBeds .chip-toggle").forEach(function (c, i) { c.classList.toggle("active", i === 0); });
     walkInput.value = 25;
     walkVal.textContent = "25 min or less";
     document.getElementById("fFurnished").classList.remove("on");
-    document.getElementById("fPets").classList.remove("on");
     document.querySelectorAll("#categoryRow .chip-toggle").forEach(function (c) { c.classList.remove("active"); });
     applyFilters();
   });

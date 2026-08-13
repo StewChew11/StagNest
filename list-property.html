@@ -16,7 +16,7 @@
 <main>
   <div class="page-header container">
     <h1>List your property</h1>
-    <p>Reach verified Fairfield students. Fill out the details below — it takes about five minutes.</p>
+    <p>Reach verified Fairfield students directly — no agents, no middlemen. Fill out the details below. Takes about five minutes, promise.</p>
   </div>
 
   <div class="container" style="padding-bottom:80px">
@@ -80,9 +80,6 @@
               <label class="checkline" style="margin-top:32px">
                 <input type="checkbox" id="pFurnished"> Furnished
               </label>
-              <label class="checkline" style="margin-top:10px">
-                <input type="checkbox" id="pPets"> Pets allowed
-              </label>
             </div>
           </div>
         </div>
@@ -143,7 +140,7 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
       </div>
       <h2 style="margin-bottom:10px">Listing submitted</h2>
-      <p>Thanks — we'll review your listing and it'll go live for verified students within 24 hours.</p>
+      <p>Thanks — we've got it. Our team will review the listing, and it'll go live for verified students within 24 hours.</p>
       <div class="card card-pad summary-card" id="summaryCard"></div>
       <div style="margin-top:28px; display:flex; gap:12px; justify-content:center; flex-wrap:wrap">
         <a href="manage.html" class="btn btn-primary btn-lg">Go to landlord dashboard</a>
@@ -219,7 +216,6 @@
       ["Available", avail],
       ["Lease term", document.getElementById("pLease").value],
       ["Furnished", document.getElementById("pFurnished").checked ? "Yes" : "No"],
-      ["Pets allowed", document.getElementById("pPets").checked ? "Yes" : "No"],
       ["Utilities included", utilities.length ? utilities.join(", ") : "None"],
       ["Parking", document.getElementById("pParking").value.trim() || "Not specified"],
       ["Photos", photos.length + " uploaded"],
