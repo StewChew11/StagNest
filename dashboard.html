@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dashboard — StagNest</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+
+<header id="nav"></header>
+
+<main>
+  <div class="account-shell container">
+    <div class="account-head">
+      <div>
+        <h1 style="font-size:30px">Welcome back</h1>
+        <p class="muted">Here's what's happening with your search and applications.</p>
+      </div>
+      <a href="browse.html" class="btn btn-primary btn-lg">Browse more houses</a>
+    </div>
+
+    <div class="tabs">
+      <div class="tab active" data-tab="saved">Saved</div>
+      <div class="tab" data-tab="applications">Applications</div>
+      <div class="tab" data-tab="documents">Documents</div>
+      <div class="tab" data-tab="alerts">Alerts</div>
+    </div>
+
+    <!-- Saved -->
+    <div class="tab-panel active" id="panel-saved">
+      <div class="listing-grid" id="savedGrid"></div>
+      <div class="empty-state hidden" id="savedEmpty">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 8.6c0 5.6-8.8 10.9-8.8 10.9S3.2 14.2 3.2 8.6a5 5 0 0 1 9-3 5 5 0 0 1 8.6 3Z"/></svg>
+        <h3>No saved listings yet</h3>
+        <p>Tap the heart on any listing to save it here.</p>
+        <a href="browse.html" class="btn btn-primary" style="margin-top:16px">Browse listings</a>
+      </div>
+    </div>
+
+    <!-- Applications -->
+    <div class="tab-panel" id="panel-applications">
+      <div class="card" id="applicationsList"></div>
+    </div>
+
+    <!-- Documents -->
+    <div class="tab-panel" id="panel-documents">
+      <div class="card" id="documentsList"></div>
+    </div>
+
+    <!-- Alerts -->
+    <div class="tab-panel" id="panel-alerts">
+      <div class="card" id="alertsList"></div>
+    </div>
+
+  </div>
+</main>
+
+<footer id="footer"></footer>
+
+<script src="assets/data.js"></script>
+<script src="assets/app.js"></script>
+<script>
+  var ICON = {
+    doc: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2h6l6 6v12a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Z"/><path d="M14 2v6h6"/></svg>',
+    check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>',
+    home: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10.5V20a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1v-4a2 2 0 0 0-4 0v4a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-9.5"/><path d="m2.5 11.5 9-8 9 8"/></svg>',
+    bell: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>'
+  };
+
+  /* ---------------- Tabs ---------------- */
+  document.querySelectorAll(".tab").forEach(function (tab) {
+    tab.addEventListener("click", function () {
+      document.querySelectorAll(".tab").forEach(function (t) { t.classList.remove("active"); });
+      document.querySelectorAll(".tab-panel").forEach(function (p) { p.classList.remove("active"); });
+      tab.classList.add("active");
+      document.getElementById("panel-" + tab.dataset.tab).classList.add("active");
+    });
+  });
+
+  /* ---------------- Saved ---------------- */
+  function renderSaved() {
+    var favs = getFavs();
+    var listings = window.LISTINGS.filter(function (l) { return favs.indexOf(l.id) !== -1; });
+    var grid = document.getElementById("savedGrid");
+    var empty = document.getElementById("savedEmpty");
+    if (listings.length === 0) {
+      grid.innerHTML = "";
+      empty.classList.remove("hidden");
+    } else {
+      empty.classList.add("hidden");
+      grid.innerHTML = listings.map(listingCard).join("");
+    }
+  }
+  window.onFavChanged = renderSaved;
+  renderSaved();
+
+  /* ---------------- Applications ---------------- */
+  var applications = [
+    { listing: window.LISTINGS[0], status: "Under review", badge: "amber", date: "Submitted Jul 28, 2026" },
+    { listing: window.LISTINGS[2], status: "Approved", badge: "green", date: "Approved Aug 2, 2026" },
+    { listing: window.LISTINGS[5], status: "Waitlisted", badge: "gray", date: "Submitted Jul 20, 2026" }
+  ];
+  document.getElementById("applicationsList").innerHTML = applications.map(function (a) {
+    return '<div class="app-item">' +
+      '<div class="item-main">' +
+        '<div class="item-ic">' + ICON.home + '</div>' +
+        '<div><div class="item-title">' + a.listing.title + '</div><div class="item-sub">' + a.date + '</div></div>' +
+      '</div>' +
+      '<span class="badge badge-' + a.badge + '">' + a.status + '</span>' +
+    '</div>';
+  }).join("");
+
+  /* ---------------- Documents ---------------- */
+  var documents = [
+    { name: "Photo ID verification", done: true },
+    { name: "Proof of enrollment", done: true },
+    { name: "Rental application", done: true },
+    { name: "Renters insurance", done: false },
+    { name: "Guarantor form", done: false }
+  ];
+  function renderDocuments() {
+    document.getElementById("documentsList").innerHTML = documents.map(function (d, i) {
+      return '<div class="doc-item">' +
+        '<div class="item-main">' +
+          '<div class="item-ic' + (d.done ? " done" : "") + '">' + (d.done ? ICON.check : ICON.doc) + '</div>' +
+          '<div><div class="item-title">' + d.name + '</div><div class="item-sub">' + (d.done ? "Complete" : "Not submitted") + '</div></div>' +
+        '</div>' +
+        '<button class="btn btn-sm ' + (d.done ? "btn-ghost" : "btn-outline") + '" data-i="' + i + '">' + (d.done ? "Mark incomplete" : "Mark complete") + '</button>' +
+      '</div>';
+    }).join("");
+  }
+  renderDocuments();
+  document.getElementById("documentsList").addEventListener("click", function (e) {
+    var btn = e.target.closest("button[data-i]");
+    if (!btn) return;
+    var d = documents[Number(btn.dataset.i)];
+    d.done = !d.done;
+    renderDocuments();
+  });
+
+  /* ---------------- Alerts ---------------- */
+  var alerts = [
+    { label: "Under $3,000 near campus", sub: "Beds: any · Walk to campus: 10 min or less", on: true },
+    { label: "4+ bed on North Benson or Jefferson", sub: "Rent: any · Furnished only", on: true },
+    { label: "Pet-friendly under $2,500", sub: "Beds: 2+ · Walk to campus: 20 min or less", on: false }
+  ];
+  function renderAlerts() {
+    document.getElementById("alertsList").innerHTML = alerts.map(function (a, i) {
+      return '<div class="alert-item">' +
+        '<div class="item-main">' +
+          '<div class="item-ic">' + ICON.bell + '</div>' +
+          '<div><div class="item-title">' + a.label + '</div><div class="item-sub">' + a.sub + '</div></div>' +
+        '</div>' +
+        '<span class="switch' + (a.on ? " on" : "") + '" data-i="' + i + '"></span>' +
+      '</div>';
+    }).join("");
+  }
+  renderAlerts();
+  document.getElementById("alertsList").addEventListener("click", function (e) {
+    var sw = e.target.closest(".switch");
+    if (!sw) return;
+    var a = alerts[Number(sw.dataset.i)];
+    a.on = !a.on;
+    renderAlerts();
+  });
+</script>
+</body>
+</html>

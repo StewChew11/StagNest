@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>StagNest — Verified off-campus housing for Fairfield University</title>
+<meta name="description" content="StagNest is a verified off-campus housing marketplace for Fairfield University students. Browse houses, compare location ratings, and rent with confidence.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+
+<header id="nav"></header>
+
+<main>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container hero-inner">
+      <div class="eyebrow">Verified students only · Real reviews · No scams</div>
+      <h1>Every Fairfield house, one trusted place.</h1>
+      <p class="lead">Browse off-campus houses near Fairfield University, filter by what actually matters — walk to campus, walk to The Seagrape, rent, beds — and sign a lease with confidence.</p>
+      <form class="hero-email-form" id="heroEmailForm">
+        <input type="email" class="input" placeholder="you@student.fairfield.edu" required>
+        <button type="submit" class="btn btn-primary btn-lg">Get started</button>
+      </form>
+      <div class="trust-line">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+        Trusted by students renting near North Benson, the beach, and downtown Fairfield
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured listings -->
+  <section class="section" style="padding-top:20px">
+    <div class="container">
+      <div class="eyebrow">Featured</div>
+      <h2 style="margin-bottom:28px">Houses students are saving right now</h2>
+      <div class="listing-grid" id="featuredGrid"></div>
+      <div class="center" style="margin-top:32px">
+        <a href="browse.html" class="btn btn-outline btn-lg">Browse all listings</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="section" style="background:var(--surface-2)">
+    <div class="container">
+      <div class="eyebrow">Why StagNest</div>
+      <h2 style="margin-bottom:36px">Built for how Fairfield students actually search</h2>
+      <div class="feature-grid">
+        <div class="feature">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 5v6c0 5 3.4 9 8 11 4.6-2 8-6 8-11V5l-8-3Z"/><path d="m9 12 2 2 4-4"/></svg></div>
+          <h3>Verified students only</h3>
+          <p>Every account is checked against a @student.fairfield.edu email before it can list, save, or review a house.</p>
+        </div>
+        <div class="feature">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-5.6-7-11a7 7 0 0 1 14 0c0 5.4-7 11-7 11Z"/><circle cx="12" cy="10" r="2.6"/></svg></div>
+          <h3>Location ratings</h3>
+          <p>You'll know before you tour whether it's a 6-minute walk to campus or a 20-minute schlep in the snow — plus how loud the block actually gets on a Thursday night.</p>
+        </div>
+        <div class="feature">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-8.9 8.5 8.7 8.7 0 0 1-3.8-.9L3 20l1-5.2A8.4 8.4 0 0 1 12.5 3a8.4 8.4 0 0 1 8.5 8.5Z"/></svg></div>
+          <h3>Talk to renters</h3>
+          <p>Before you sign anything, message someone who actually lived there. They'll tell you if the heat actually works and whether the landlord ghosts you in January.</p>
+        </div>
+        <div class="feature">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12h6M9 16h6M8 4h8a2 2 0 0 1 2 2v13l-3-2-3 2-3-2-3 2V6a2 2 0 0 1 2-2Z"/></svg></div>
+          <h3>Universal application</h3>
+          <p>Fill out your rental profile once and apply to any house on StagNest in a couple of clicks.</p>
+        </div>
+        <div class="feature">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="13" rx="2"/><path d="M2 10h20M6 15h4"/></svg></div>
+          <h3>Pay rent + split</h3>
+          <p>Nobody wants to be the roommate chasing four Venmo payments on the 1st. Autopay splits it evenly so rent just... happens.</p>
+        </div>
+        <div class="feature">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17.3 6.2 20l1.1-6.5L2.5 9l6.6-1L12 2l2.9 6 6.6 1-4.8 4.5 1.1 6.5Z"/></svg></div>
+          <h3>Trusted reviews</h3>
+          <p>Reviews come only from verified past tenants, so you get an honest read before you commit to a lease.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How it works -->
+  <section class="section">
+    <div class="container">
+      <div class="eyebrow">How it works</div>
+      <h2 style="margin-bottom:36px">From search to move-in in three steps</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <h3>Browse &amp; filter</h3>
+          <p>Search verified listings near campus and filter by rent, beds, and walk time to the places you actually go.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <h3>Compare &amp; message</h3>
+          <p>Check location ratings, read verified reviews, and message the landlord or a current tenant with questions.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <h3>Apply &amp; move in</h3>
+          <p>Submit your universal application, sign your lease, and manage rent and maintenance from your tenant portal.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Student / landlord split -->
+  <section class="section" style="background:var(--surface-2)">
+    <div class="container">
+      <div class="split">
+        <div class="split-card dark">
+          <div class="eyebrow" style="color:#fff">For students</div>
+          <h3>Find a house you'll actually love</h3>
+          <p>Skip the sketchy group chats and expired listings. Search verified houses near Fairfield with real ratings and real reviews.</p>
+          <ul>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Save favorites and compare side by side</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> One application, every listing</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Pay rent and split with roommates</li>
+          </ul>
+          <a href="browse.html" class="btn btn-primary btn-lg">Browse houses</a>
+        </div>
+        <div class="split-card light">
+          <div class="eyebrow">For landlords</div>
+          <h3>List once, reach verified students</h3>
+          <p>Post your property in minutes and reach a pool of Fairfield-verified renters — no more sorting through spam inquiries.</p>
+          <ul>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Manage applications and rent roll in one place</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Track maintenance requests by property</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Get reviewed only by verified past tenants</li>
+          </ul>
+          <a href="list-property.html" class="btn btn-dark btn-lg">List your property</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Closing CTA -->
+  <section class="section">
+    <div class="container">
+      <div class="cta-band">
+        <h2>Ready to find your next house?</h2>
+        <p>It takes less than five minutes to sign in and start browsing verified listings near Fairfield.</p>
+        <a href="signin.html" class="btn btn-primary btn-lg">Sign in with your Fairfield email</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer id="footer"></footer>
+
+<script src="assets/data.js"></script>
+<script src="assets/app.js"></script>
+<script>
+  var featured = window.LISTINGS.slice(0, 3);
+  document.getElementById("featuredGrid").innerHTML = featured.map(listingCard).join("");
+
+  document.getElementById("heroEmailForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    window.location.href = "signin.html";
+  });
+</script>
+</body>
+</html>

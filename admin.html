@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admin — StagNest</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+
+<header id="nav"></header>
+
+<main>
+  <div class="account-shell container">
+    <div class="account-head">
+      <div>
+        <h1 style="font-size:30px">Admin</h1>
+        <p class="muted">Platform moderation — not linked from navigation, admin access only.</p>
+      </div>
+      <span class="badge badge-red">Internal tool</span>
+    </div>
+
+    <div class="stat-row">
+      <div class="card stat-card"><div class="v">9</div><div class="k">Total listings</div></div>
+      <div class="card stat-card"><div class="v">6</div><div class="k">Verified landlords</div></div>
+      <div class="card stat-card"><div class="v">248</div><div class="k">Verified students</div></div>
+      <div class="card stat-card"><div class="v">2</div><div class="k">Pending reviews</div></div>
+    </div>
+
+    <div class="tabs">
+      <div class="tab active" data-tab="overview">Overview</div>
+      <div class="tab" data-tab="landlords">Landlords</div>
+      <div class="tab" data-tab="listings">Listings</div>
+      <div class="tab" data-tab="reviews">Reviews</div>
+      <div class="tab" data-tab="users">Users</div>
+    </div>
+
+    <!-- Overview -->
+    <div class="tab-panel active" id="panel-overview">
+      <div class="card card-pad">
+        <h3 style="margin-bottom:16px">Platform activity</h3>
+        <div class="bar-row"><div class="bar-label">Listings live</div><div class="bar-track"><div class="bar-fill" style="width:78%"></div></div><div class="bar-val">78%</div></div>
+        <div class="bar-row"><div class="bar-label">Landlords verified</div><div class="bar-track"><div class="bar-fill" style="width:67%"></div></div><div class="bar-val">67%</div></div>
+        <div class="bar-row"><div class="bar-label">Reviews moderated</div><div class="bar-track"><div class="bar-fill" style="width:91%"></div></div><div class="bar-val">91%</div></div>
+      </div>
+    </div>
+
+    <!-- Landlords -->
+    <div class="tab-panel" id="panel-landlords">
+      <div class="card" id="landlordsList"></div>
+    </div>
+
+    <!-- Listings -->
+    <div class="tab-panel" id="panel-listings">
+      <div class="card" id="adminListingsList"></div>
+    </div>
+
+    <!-- Reviews -->
+    <div class="tab-panel" id="panel-reviews">
+      <div class="card" id="reviewsList"></div>
+    </div>
+
+    <!-- Users -->
+    <div class="tab-panel" id="panel-users">
+      <div class="card">
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Joined</th></tr></thead>
+            <tbody id="usersBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<footer id="footer"></footer>
+
+<script src="assets/data.js"></script>
+<script src="assets/app.js"></script>
+<script>
+  document.querySelectorAll(".tab").forEach(function (tab) {
+    tab.addEventListener("click", function () {
+      document.querySelectorAll(".tab").forEach(function (t) { t.classList.remove("active"); });
+      document.querySelectorAll(".tab-panel").forEach(function (p) { p.classList.remove("active"); });
+      tab.classList.add("active");
+      document.getElementById("panel-" + tab.dataset.tab).classList.add("active");
+    });
+  });
+
+  /* ---------------- Landlords ---------------- */
+  var landlords = [
+    { name: "Marie Costa", email: "marie@costaproperties.com", status: "pending" },
+    { name: "Tom DiPietro", email: "tom.d@gmail.com", status: "approved" },
+    { name: "Fairfield Rentals LLC", email: "info@fairfieldrentals.com", status: "approved" },
+    { name: "Ellen Ryder", email: "eryder@outlook.com", status: "pending" },
+    { name: "Coastal Property Group", email: "hello@coastalpg.com", status: "approved" },
+    { name: "Rick Alessi", email: "rick.alessi@yahoo.com", status: "approved" }
+  ];
+  function renderLandlords() {
+    document.getElementById("landlordsList").innerHTML = landlords.map(function (l, i) {
+      var actions = l.status === "pending"
+        ? '<div class="row-actions"><button class="btn btn-sm btn-dark" data-act="approve" data-i="' + i + '">Approve</button><button class="btn btn-sm btn-ghost" data-act="reject" data-i="' + i + '">Reject</button></div>'
+        : '<span class="badge badge-' + (l.status === "approved" ? "green" : "gray") + '">' + (l.status === "approved" ? "Approved" : "Rejected") + '</span>';
+      return '<div class="app-item">' +
+        '<div class="item-main"><div><div class="item-title">' + l.name + '</div><div class="item-sub">' + l.email + '</div></div></div>' +
+        actions +
+      '</div>';
+    }).join("");
+  }
+  renderLandlords();
+  document.getElementById("landlordsList").addEventListener("click", function (e) {
+    var btn = e.target.closest("button[data-act]");
+    if (!btn) return;
+    landlords[Number(btn.dataset.i)].status = btn.dataset.act === "approve" ? "approved" : "rejected";
+    renderLandlords();
+  });
+
+  /* ---------------- Listings ---------------- */
+  var adminListings = window.LISTINGS.slice(0, 6).map(function (l, i) {
+    return { id: l.id, title: l.title, flagged: i === 1 || i === 4, removed: false };
+  });
+  function renderAdminListings() {
+    document.getElementById("adminListingsList").innerHTML = adminListings.map(function (l, i) {
+      if (l.removed) {
+        return '<div class="app-item"><div class="item-main"><div class="item-title">' + l.title + '</div></div><span class="badge badge-gray">Removed</span></div>';
+      }
+      var badge = l.flagged ? '<span class="badge badge-amber">Flagged</span>' : '<span class="badge badge-green">Live</span>';
+      var action = l.flagged ? '<button class="btn btn-sm btn-outline" data-i="' + i + '">Remove listing</button>' : '';
+      return '<div class="app-item">' +
+        '<div class="item-main"><div><div class="item-title">' + l.title + '</div></div></div>' +
+        '<div class="row-actions">' + badge + action + '</div>' +
+      '</div>';
+    }).join("");
+  }
+  renderAdminListings();
+  document.getElementById("adminListingsList").addEventListener("click", function (e) {
+    var btn = e.target.closest("button[data-i]");
+    if (!btn) return;
+    adminListings[Number(btn.dataset.i)].removed = true;
+    renderAdminListings();
+  });
+
+  /* ---------------- Reviews ---------------- */
+  var reviews = [
+    { author: "Jordan M.", listing: window.LISTINGS[0].title, text: "Landlord was super responsive and the house is exactly as pictured.", status: "pending" },
+    { author: "Priya S.", listing: window.LISTINGS[1].title, text: "Great location but the water pressure could be better.", status: "pending" },
+    { author: "Devon K.", listing: window.LISTINGS[2].title, text: "Loved living here — would recommend to any group of friends.", status: "published" }
+  ];
+  function renderReviews() {
+    document.getElementById("reviewsList").innerHTML = reviews.map(function (r, i) {
+      var actions = r.status === "pending"
+        ? '<div class="row-actions"><button class="btn btn-sm btn-dark" data-act="publish" data-i="' + i + '">Publish</button><button class="btn btn-sm btn-ghost" data-act="remove" data-i="' + i + '">Remove</button></div>'
+        : '<span class="badge badge-green">Published</span>';
+      return '<div class="app-item" style="align-items:flex-start">' +
+        '<div class="item-main"><div><div class="item-title">' + r.author + ' · ' + r.listing + '</div><div class="item-sub" style="max-width:420px">' + r.text + '</div></div></div>' +
+        actions +
+      '</div>';
+    }).join("");
+  }
+  renderReviews();
+  document.getElementById("reviewsList").addEventListener("click", function (e) {
+    var btn = e.target.closest("button[data-act]");
+    if (!btn) return;
+    var i = Number(btn.dataset.i);
+    if (btn.dataset.act === "publish") { reviews[i].status = "published"; renderReviews(); }
+    else { reviews.splice(i, 1); renderReviews(); }
+  });
+
+  /* ---------------- Users ---------------- */
+  var users = [
+    { name: "Jordan M.", email: "jmiller24@student.fairfield.edu", role: "Student", joined: "Sep 2025" },
+    { name: "Casey R.", email: "crichards25@student.fairfield.edu", role: "Student", joined: "Sep 2025" },
+    { name: "Marie Costa", email: "marie@costaproperties.com", role: "Landlord", joined: "Jun 2025" },
+    { name: "Priya S.", email: "psharma26@student.fairfield.edu", role: "Student", joined: "Jan 2026" },
+    { name: "Tom DiPietro", email: "tom.d@gmail.com", role: "Landlord", joined: "May 2025" }
+  ];
+  document.getElementById("usersBody").innerHTML = users.map(function (u) {
+    return "<tr><td>" + u.name + "</td><td>" + u.email + '</td><td><span class="badge badge-' + (u.role === "Student" ? "blue" : "amber") + '">' + u.role + "</span></td><td>" + u.joined + "</td></tr>";
+  }).join("");
+</script>
+</body>
+</html>

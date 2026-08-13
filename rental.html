@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tenant portal — StagNest</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+
+<header id="nav"></header>
+
+<main>
+  <div class="account-shell container">
+    <div class="account-head">
+      <div>
+        <h1 style="font-size:30px">Tenant portal</h1>
+        <p class="muted" id="rentalAddr">142 North Benson Rd, Fairfield, CT</p>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <div class="tab active" data-tab="rent">Rent</div>
+      <div class="tab" data-tab="maintenance">Maintenance</div>
+      <div class="tab" data-tab="lease">Lease &amp; docs</div>
+      <div class="tab" data-tab="messages">Messages</div>
+    </div>
+
+    <!-- Rent -->
+    <div class="tab-panel active" id="panel-rent">
+      <div class="card balance-card" style="margin-bottom:20px">
+        <div class="muted" style="font-size:13.5px; font-weight:700; text-transform:uppercase; letter-spacing:.04em">Current balance</div>
+        <div class="amt" id="balanceAmt">$900</div>
+        <div class="due" id="balanceDue">Due September 1, 2026</div>
+        <button class="btn btn-primary btn-lg" id="payBtn" style="max-width:240px; margin:0 auto">Pay rent</button>
+      </div>
+
+      <div class="card card-pad" style="margin-bottom:20px">
+        <div class="switch-row">
+          <div>
+            <div style="font-weight:700; font-size:14.5px">Autopay</div>
+            <div class="faint" style="font-size:13px">Automatically pay your share on the 1st of each month</div>
+          </div>
+          <span class="switch" id="autopaySwitch"></span>
+        </div>
+      </div>
+
+      <div class="card card-pad" style="margin-bottom:20px">
+        <h3 style="margin-bottom:14px">Roommate split</h3>
+        <div class="split-row"><span>You</span><span>$900 / mo</span></div>
+        <div class="split-row"><span>Jordan M.</span><span>$900 / mo</span></div>
+        <div class="split-row"><span>Casey R.</span><span>$900 / mo</span></div>
+        <div class="split-row"><span>Alex T.</span><span>$900 / mo</span></div>
+      </div>
+
+      <div class="card">
+        <div style="padding:20px 20px 0"><h3>Payment history</h3></div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead><tr><th>Date</th><th>Amount</th><th>Method</th><th>Status</th></tr></thead>
+            <tbody id="historyBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Maintenance -->
+    <div class="tab-panel" id="panel-maintenance">
+      <div class="card card-pad" style="margin-bottom:20px">
+        <h3 style="margin-bottom:14px">New maintenance request</h3>
+        <form id="maintForm">
+          <div class="field">
+            <label for="mTitle">What's the issue?</label>
+            <input type="text" class="input" id="mTitle" placeholder="e.g. Leaky kitchen faucet" required>
+          </div>
+          <div class="field">
+            <label for="mDetail">Details</label>
+            <textarea class="input" id="mDetail" rows="3" placeholder="Add any detail that will help the landlord fix it faster."></textarea>
+          </div>
+          <button type="submit" class="btn btn-dark">Submit request</button>
+        </form>
+      </div>
+      <div class="card" id="maintList"></div>
+    </div>
+
+    <!-- Lease & docs -->
+    <div class="tab-panel" id="panel-lease">
+      <div class="card card-pad" style="margin-bottom:20px">
+        <h3 style="margin-bottom:14px">Lease summary</h3>
+        <div class="summary-row"><span class="k">Address</span><span class="v">142 North Benson Rd, Fairfield, CT</span></div>
+        <div class="summary-row"><span class="k">Lease term</span><span class="v">12 months</span></div>
+        <div class="summary-row"><span class="k">Start date</span><span class="v">Sep 1, 2025</span></div>
+        <div class="summary-row"><span class="k">End date</span><span class="v">Aug 31, 2026</span></div>
+        <div class="summary-row"><span class="k">Monthly rent (your share)</span><span class="v">$900</span></div>
+        <div class="summary-row"><span class="k">Security deposit</span><span class="v">$900</span></div>
+      </div>
+      <div class="card" id="docsList"></div>
+    </div>
+
+    <!-- Messages -->
+    <div class="tab-panel" id="panel-messages">
+      <div class="card">
+        <div style="padding:16px 20px; border-bottom:1px solid var(--border); font-weight:700">Marie Costa · Landlord</div>
+        <div class="msg-thread" id="msgThread"></div>
+        <div class="msg-input-row">
+          <input type="text" class="input" id="msgInput" placeholder="Type a message…">
+          <button class="btn btn-primary" id="msgSendBtn">Send</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<footer id="footer"></footer>
+
+<script src="assets/data.js"></script>
+<script src="assets/app.js"></script>
+<script>
+  var ICON = {
+    wrench: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.8 2.8-2.1-2.1 2.9-2.7Z"/></svg>',
+    doc: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2h6l6 6v12a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Z"/><path d="M14 2v6h6"/></svg>'
+  };
+
+  document.querySelectorAll(".tab").forEach(function (tab) {
+    tab.addEventListener("click", function () {
+      document.querySelectorAll(".tab").forEach(function (t) { t.classList.remove("active"); });
+      document.querySelectorAll(".tab-panel").forEach(function (p) { p.classList.remove("active"); });
+      tab.classList.add("active");
+      document.getElementById("panel-" + tab.dataset.tab).classList.add("active");
+    });
+  });
+
+  /* ---------------- Rent ---------------- */
+  var balance = 900;
+  function renderBalance() {
+    document.getElementById("balanceAmt").textContent = window.money(balance);
+    var btn = document.getElementById("payBtn");
+    if (balance === 0) {
+      document.getElementById("balanceDue").textContent = "Paid in full for September";
+      btn.innerHTML = "Paid for this month";
+      btn.disabled = true;
+    } else {
+      document.getElementById("balanceDue").textContent = "Due September 1, 2026";
+      btn.innerHTML = "Pay rent";
+      btn.disabled = false;
+    }
+  }
+  document.getElementById("payBtn").addEventListener("click", function () {
+    if (balance === 0) return;
+    var btn = this;
+    var originalLabel = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = "Redirecting to checkout…";
+
+    fetch("/.netlify/functions/create-checkout", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        amount: balance,
+        label: "Rent — " + document.getElementById("rentalAddr").textContent.trim()
+      })
+    })
+      .then(function (res) {
+        if (!res.ok) throw new Error("Checkout endpoint returned " + res.status);
+        return res.json();
+      })
+      .then(function (data) {
+        if (!data.url) throw new Error("No checkout URL in response");
+        window.location = data.url;
+      })
+      .catch(function (err) {
+        console.warn("Stripe Checkout unavailable (" + err.message + ") — falling back to demo payment flow. This is expected when opened from disk or before STRIPE_SECRET_KEY is set on Netlify.");
+        var paidAmount = balance;
+        btn.disabled = false;
+        btn.innerHTML = originalLabel;
+        balance = 0;
+        renderBalance();
+        paymentHistory.unshift({ date: "Aug 8, 2026", amount: paidAmount, method: "Bank transfer", status: "Paid" });
+        renderHistory();
+      });
+  });
+  renderBalance();
+
+  document.getElementById("autopaySwitch").addEventListener("click", function () {
+    this.classList.toggle("on");
+  });
+
+  var paymentHistory = [
+    { date: "Jul 1, 2026", amount: 900, method: "Bank transfer", status: "Paid" },
+    { date: "Jun 1, 2026", amount: 900, method: "Bank transfer", status: "Paid" },
+    { date: "May 1, 2026", amount: 900, method: "Card", status: "Paid" }
+  ];
+  function renderHistory() {
+    document.getElementById("historyBody").innerHTML = paymentHistory.map(function (h) {
+      return "<tr><td>" + h.date + "</td><td>" + window.money(h.amount) + "</td><td>" + h.method + '</td><td><span class="badge badge-green">' + h.status + "</span></td></tr>";
+    }).join("");
+  }
+  renderHistory();
+
+  // Reflect a real Stripe payment when Checkout redirects back here.
+  (function handleCheckoutReturn() {
+    var params = new URLSearchParams(location.search);
+    if (params.get("paid") === "1" && balance > 0) {
+      var paidAmount = balance;
+      balance = 0;
+      paymentHistory.unshift({ date: "Aug 8, 2026", amount: paidAmount, method: "Card", status: "Paid" });
+      renderBalance();
+      renderHistory();
+      history.replaceState(null, "", location.pathname);
+    }
+  })();
+
+  /* ---------------- Maintenance ---------------- */
+  var maintRequests = [
+    { title: "Leaky kitchen faucet", detail: "Drips constantly, worse at night.", status: "In progress", badge: "blue", date: "Reported Aug 2, 2026" },
+    { title: "Bedroom window won't lock", detail: "Latch is loose on the north-facing window.", status: "Open", badge: "amber", date: "Reported Jul 30, 2026" },
+    { title: "Basement dehumidifier filter", detail: "Needs a replacement filter.", status: "Resolved", badge: "green", date: "Reported Jul 10, 2026" }
+  ];
+  function renderMaint() {
+    document.getElementById("maintList").innerHTML = maintRequests.map(function (m) {
+      return '<div class="maint-item">' +
+        '<div class="item-main">' +
+          '<div class="item-ic">' + ICON.wrench + '</div>' +
+          '<div><div class="item-title">' + m.title + '</div><div class="item-sub">' + m.date + '</div></div>' +
+        '</div>' +
+        '<span class="badge badge-' + m.badge + '">' + m.status + '</span>' +
+      '</div>';
+    }).join("");
+  }
+  renderMaint();
+
+  document.getElementById("maintForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var title = document.getElementById("mTitle").value.trim();
+    if (!title) return;
+    maintRequests.unshift({ title: title, detail: document.getElementById("mDetail").value.trim(), status: "Open", badge: "amber", date: "Reported just now" });
+    renderMaint();
+    this.reset();
+  });
+
+  /* ---------------- Lease & docs ---------------- */
+  var docs = ["Signed lease agreement.pdf", "Move-in inspection report.pdf", "Renters insurance policy.pdf"];
+  document.getElementById("docsList").innerHTML = docs.map(function (d) {
+    return '<div class="doc-item">' +
+      '<div class="item-main"><div class="item-ic done">' + ICON.doc + '</div><div class="item-title">' + d + '</div></div>' +
+      '<button class="btn btn-ghost btn-sm">View</button>' +
+    '</div>';
+  }).join("");
+
+  /* ---------------- Messages ---------------- */
+  var messages = [
+    { from: "in", text: "Hey! Just checking in — how's everything at the house?", time: "Aug 5, 9:14 AM" },
+    { from: "out", text: "All good! Quick question about the basement dehumidifier filter though.", time: "Aug 5, 9:20 AM" },
+    { from: "in", text: "I'll send someone by this week to swap it out.", time: "Aug 5, 9:22 AM" }
+  ];
+  function renderMessages() {
+    var thread = document.getElementById("msgThread");
+    thread.innerHTML = messages.map(function (m) {
+      return '<div class="msg-bubble ' + m.from + '">' + m.text + '<div class="msg-time">' + m.time + '</div></div>';
+    }).join("");
+    thread.scrollTop = thread.scrollHeight;
+  }
+  renderMessages();
+
+  function sendMsg() {
+    var input = document.getElementById("msgInput");
+    var text = input.value.trim();
+    if (!text) return;
+    messages.push({ from: "out", text: text, time: "Just now" });
+    input.value = "";
+    renderMessages();
+  }
+  document.getElementById("msgSendBtn").addEventListener("click", sendMsg);
+  document.getElementById("msgInput").addEventListener("keydown", function (e) {
+    if (e.key === "Enter") sendMsg();
+  });
+</script>
+</body>
+</html>

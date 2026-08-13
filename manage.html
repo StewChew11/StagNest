@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Manage properties — StagNest</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+
+<header id="nav"></header>
+
+<main>
+  <div class="account-shell container">
+    <div class="account-head">
+      <div>
+        <h1 style="font-size:30px">Landlord dashboard</h1>
+        <p class="muted">Manage rent, maintenance, and applications across your properties.</p>
+      </div>
+      <a href="list-property.html" class="btn btn-primary btn-lg">Add a listing</a>
+    </div>
+
+    <div class="stat-row">
+      <div class="card stat-card">
+        <div class="v">4</div>
+        <div class="k">Active listings</div>
+      </div>
+      <div class="card stat-card">
+        <div class="v">92%</div>
+        <div class="k">Occupancy</div>
+        <div class="delta up">+4% vs last term</div>
+      </div>
+      <div class="card stat-card">
+        <div class="v">$14,850</div>
+        <div class="k">Collected this month</div>
+        <div class="delta up">+$900 vs last month</div>
+      </div>
+      <div class="card stat-card">
+        <div class="v">3</div>
+        <div class="k">Open maintenance</div>
+        <div class="delta down">2 new this week</div>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <div class="tab active" data-tab="rentroll">Rent roll</div>
+      <div class="tab" data-tab="maintenance">Maintenance queue</div>
+      <div class="tab" data-tab="applications">Applications</div>
+      <div class="tab" data-tab="listings">Listings</div>
+    </div>
+
+    <!-- Rent roll -->
+    <div class="tab-panel active" id="panel-rentroll">
+      <div class="card card-pad" style="margin-bottom:20px">
+        <div class="switch-row" style="margin-bottom:14px">
+          <div>
+            <div style="font-weight:700">Collection rate — August</div>
+            <div class="faint" style="font-size:13px">14 of 16 tenants paid on time</div>
+          </div>
+          <div style="font-size:22px; font-weight:800">88%</div>
+        </div>
+        <div class="bar-track" style="height:8px"><div class="bar-fill" style="width:88%"></div></div>
+      </div>
+      <div class="card">
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead><tr><th>Tenant</th><th>Property</th><th>Rent</th><th>Status</th></tr></thead>
+            <tbody id="rentRollBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Maintenance queue -->
+    <div class="tab-panel" id="panel-maintenance">
+      <div class="card" id="maintQueue"></div>
+    </div>
+
+    <!-- Applications -->
+    <div class="tab-panel" id="panel-applications">
+      <div class="card" id="appsList"></div>
+    </div>
+
+    <!-- Listings -->
+    <div class="tab-panel" id="panel-listings">
+      <div class="card">
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead><tr><th>Listing</th><th>Rent</th><th>Views</th><th>Saves</th><th>Status</th></tr></thead>
+            <tbody id="listingsBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<footer id="footer"></footer>
+
+<script src="assets/data.js"></script>
+<script src="assets/app.js"></script>
+<script>
+  var ICON = { wrench: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.8 2.8-2.1-2.1 2.9-2.7Z"/></svg>' };
+
+  document.querySelectorAll(".tab").forEach(function (tab) {
+    tab.addEventListener("click", function () {
+      document.querySelectorAll(".tab").forEach(function (t) { t.classList.remove("active"); });
+      document.querySelectorAll(".tab-panel").forEach(function (p) { p.classList.remove("active"); });
+      tab.classList.add("active");
+      document.getElementById("panel-" + tab.dataset.tab).classList.add("active");
+    });
+  });
+
+  /* ---------------- Rent roll ---------------- */
+  var rentRoll = [
+    { tenant: "Jordan M.", property: "142 North Benson Rd", rent: 900, status: "Paid", badge: "green" },
+    { tenant: "Casey R.", property: "142 North Benson Rd", rent: 900, status: "Paid", badge: "green" },
+    { tenant: "Priya S.", property: "58 Reef Rd", rent: 1050, status: "Paid", badge: "green" },
+    { tenant: "Marcus O.", property: "58 Reef Rd", rent: 1050, status: "Late", badge: "red" },
+    { tenant: "Devon K.", property: "27 Jefferson St", rent: 900, status: "Paid", badge: "green" },
+    { tenant: "Sam L.", property: "27 Jefferson St", rent: 900, status: "Pending", badge: "amber" }
+  ];
+  document.getElementById("rentRollBody").innerHTML = rentRoll.map(function (r) {
+    return "<tr><td>" + r.tenant + "</td><td>" + r.property + "</td><td>" + window.money(r.rent) + '</td><td><span class="badge badge-' + r.badge + '">' + r.status + "</span></td></tr>";
+  }).join("");
+
+  /* ---------------- Maintenance queue ---------------- */
+  var statusCycle = { "Open": ["In progress", "blue"], "In progress": ["Resolved", "green"], "Resolved": ["Open", "amber"] };
+  var maintQueue = [
+    { title: "Leaky kitchen faucet", property: "142 North Benson Rd", status: "In progress", badge: "blue" },
+    { title: "Bedroom window won't lock", property: "142 North Benson Rd", status: "Open", badge: "amber" },
+    { title: "Heat not turning on", property: "58 Reef Rd", status: "Open", badge: "amber" }
+  ];
+  function renderMaintQueue() {
+    document.getElementById("maintQueue").innerHTML = maintQueue.map(function (m, i) {
+      return '<div class="maint-item">' +
+        '<div class="item-main">' +
+          '<div class="item-ic">' + ICON.wrench + '</div>' +
+          '<div><div class="item-title">' + m.title + '</div><div class="item-sub">' + m.property + '</div></div>' +
+        '</div>' +
+        '<div class="row-actions">' +
+          '<span class="badge badge-' + m.badge + '">' + m.status + '</span>' +
+          '<button class="btn btn-sm btn-outline" data-i="' + i + '">Advance status</button>' +
+        '</div>' +
+      '</div>';
+    }).join("");
+  }
+  renderMaintQueue();
+  document.getElementById("maintQueue").addEventListener("click", function (e) {
+    var btn = e.target.closest("button[data-i]");
+    if (!btn) return;
+    var m = maintQueue[Number(btn.dataset.i)];
+    var next = statusCycle[m.status];
+    m.status = next[0];
+    m.badge = next[1];
+    renderMaintQueue();
+  });
+
+  /* ---------------- Applications ---------------- */
+  var apps = [
+    { name: "Taylor B.", listing: window.LISTINGS[3].title, date: "Applied Aug 5, 2026", status: "pending" },
+    { name: "Morgan F.", listing: window.LISTINGS[6].title, date: "Applied Aug 4, 2026", status: "pending" },
+    { name: "Riley P.", listing: window.LISTINGS[8].title, date: "Applied Aug 1, 2026", status: "accepted" }
+  ];
+  function renderApps() {
+    document.getElementById("appsList").innerHTML = apps.map(function (a, i) {
+      var actions = a.status === "pending"
+        ? '<div class="row-actions"><button class="btn btn-sm btn-dark" data-act="accept" data-i="' + i + '">Accept</button><button class="btn btn-sm btn-ghost" data-act="decline" data-i="' + i + '">Decline</button></div>'
+        : '<span class="badge badge-' + (a.status === "accepted" ? "green" : "gray") + '">' + (a.status === "accepted" ? "Accepted" : "Declined") + '</span>';
+      return '<div class="app-item">' +
+        '<div class="item-main"><div><div class="item-title">' + a.name + '</div><div class="item-sub">' + a.listing + ' · ' + a.date + '</div></div></div>' +
+        actions +
+      '</div>';
+    }).join("");
+  }
+  renderApps();
+  document.getElementById("appsList").addEventListener("click", function (e) {
+    var btn = e.target.closest("button[data-act]");
+    if (!btn) return;
+    apps[Number(btn.dataset.i)].status = btn.dataset.act === "accept" ? "accepted" : "declined";
+    renderApps();
+  });
+
+  /* ---------------- Listings ---------------- */
+  var myListingIds = [1, 2, 3, 8];
+  document.getElementById("listingsBody").innerHTML = myListingIds.map(function (id) {
+    var l = window.LISTINGS.find(function (x) { return x.id === id; });
+    var views = 80 + id * 23;
+    var saves = 4 + id * 2;
+    return "<tr><td>" + l.title + "</td><td>" + window.money(l.rent) + "</td><td>" + views + "</td><td>" + saves + '</td><td><span class="badge badge-green">Live</span></td></tr>';
+  }).join("");
+</script>
+</body>
+</html>

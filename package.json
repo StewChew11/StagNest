@@ -1,0 +1,9 @@
+{
+  "name": "stagnest",
+  "private": true,
+  "version": "1.0.0",
+  "description": "StagNest — static site with a Netlify Function for Stripe rent payments.",
+  "dependencies": {
+    "stripe": "^16.0.0"
+  }
+}

@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Browse houses — StagNest</title>
+<meta name="description" content="Browse verified off-campus houses near Fairfield University. Filter by rent, beds, walk time to campus, and more.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+
+<header id="nav"></header>
+
+<main>
+  <div class="page-header container">
+    <h1>Browse houses near Fairfield</h1>
+    <p>Filter by what matters — rent, beds, and walk time to campus — then compare on the list or the map.</p>
+  </div>
+
+  <div class="container">
+    <div class="category-row" id="categoryRow"></div>
+  </div>
+
+  <div class="container browse-layout">
+
+    <!-- Filter rail -->
+    <aside class="filter-rail">
+      <div class="card card-pad">
+        <div class="filter-group">
+          <label class="title">Rent per month</label>
+          <div class="row-2">
+            <input type="number" class="input" id="fRentMin" placeholder="Min" min="0" step="50">
+            <input type="number" class="input" id="fRentMax" placeholder="Max" min="0" step="50">
+          </div>
+        </div>
+
+        <div class="filter-group">
+          <label class="title">Bedrooms</label>
+          <div class="pill-row" id="fBeds">
+            <span class="chip chip-toggle active" data-val="0">Any</span>
+            <span class="chip chip-toggle" data-val="1">1+</span>
+            <span class="chip chip-toggle" data-val="2">2+</span>
+            <span class="chip chip-toggle" data-val="3">3+</span>
+            <span class="chip chip-toggle" data-val="4">4+</span>
+            <span class="chip chip-toggle" data-val="5">5+</span>
+          </div>
+        </div>
+
+        <div class="filter-group">
+          <label class="title">Max walk to campus</label>
+          <input type="range" id="fWalk" min="5" max="25" value="25" style="width:100%; accent-color:var(--red);">
+          <div class="range-vals"><span>5 min</span><span id="fWalkVal">25 min or less</span></div>
+        </div>
+
+        <div class="filter-group">
+          <div class="switch-row" style="margin-bottom:14px">
+            <span class="label">Furnished</span>
+            <span class="switch" id="fFurnished"></span>
+          </div>
+          <div class="switch-row">
+            <span class="label">Pets allowed</span>
+            <span class="switch" id="fPets"></span>
+          </div>
+        </div>
+
+        <button class="btn btn-ghost btn-block" id="fClear">Clear filters</button>
+      </div>
+    </aside>
+
+    <!-- Results -->
+    <div>
+      <div class="results-toolbar">
+        <div class="results-count" id="resultsCount">Loading listings…</div>
+        <div class="view-toggle">
+          <button id="viewListBtn" class="active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg> List</button>
+          <button id="viewMapBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-5.6-7-11a7 7 0 0 1 14 0c0 5.4-7 11-7 11Z"/><circle cx="12" cy="10" r="2.6"/></svg> Map</button>
+        </div>
+      </div>
+
+      <div class="browse-view active" id="listView">
+        <div class="listing-grid" id="resultsGrid"></div>
+        <div class="empty-state hidden" id="emptyState">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+          <h3>No homes match those filters</h3>
+          <p>Try widening your rent range or walk-time limit.</p>
+        </div>
+      </div>
+
+      <div class="browse-view" id="mapView">
+        <div class="map-split">
+          <div class="map-split-list" id="mapSplitList"></div>
+          <div class="map-wrap">
+            <div id="gmap" class="hidden"></div>
+            <div id="schematicMap" class="schematic-map"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<footer id="footer"></footer>
+
+<script src="assets/data.js"></script>
+<script src="assets/app.js"></script>
+<script>
+  var CATEGORIES = [
+    { key: "beach", label: "Beach houses", test: function (l) { return /beach/i.test(l.address) || /beach/i.test(l.title); } },
+    { key: "near-campus", label: "Near campus", test: function (l) { return l.r.campus <= 10; } },
+    { key: "furnished", label: "Furnished", test: function (l) { return l.furnished; } },
+    { key: "under-3k", label: "Under $3k", test: function (l) { return l.rent < 3000; } }
+  ];
+
+  var state = { rentMin: null, rentMax: null, beds: 0, walk: 25, furnished: false, pets: false, categories: [] };
+  var currentResults = window.LISTINGS.slice();
+
+  document.getElementById("categoryRow").innerHTML = CATEGORIES.map(function (c) {
+    return '<span class="chip chip-toggle" data-cat="' + c.key + '">' + c.label + "</span>";
+  }).join("");
+  document.getElementById("categoryRow").addEventListener("click", function (e) {
+    var chip = e.target.closest(".chip-toggle");
+    if (!chip) return;
+    chip.classList.toggle("active");
+    var key = chip.dataset.cat;
+    var idx = state.categories.indexOf(key);
+    if (chip.classList.contains("active")) {
+      if (idx === -1) state.categories.push(key);
+    } else if (idx !== -1) {
+      state.categories.splice(idx, 1);
+    }
+    applyFilters();
+  });
+
+  function applyFilters() {
+    currentResults = window.LISTINGS.filter(function (l) {
+      if (state.rentMin != null && l.rent < state.rentMin) return false;
+      if (state.rentMax != null && l.rent > state.rentMax) return false;
+      if (state.beds > 0 && l.beds < state.beds) return false;
+      if (l.r.campus > state.walk) return false;
+      if (state.furnished && !l.furnished) return false;
+      if (state.pets && !l.pets) return false;
+      if (state.categories.length) {
+        var matchesAll = state.categories.every(function (key) {
+          var cat = CATEGORIES.find(function (c) { return c.key === key; });
+          return cat.test(l);
+        });
+        if (!matchesAll) return false;
+      }
+      return true;
+    });
+    renderResults();
+    if (document.getElementById("mapView").classList.contains("active")) {
+      renderSchematicPins();
+      renderMapSplitList();
+    }
+  }
+
+  function renderResults() {
+    var grid = document.getElementById("resultsGrid");
+    var empty = document.getElementById("emptyState");
+    document.getElementById("resultsCount").textContent =
+      currentResults.length + (currentResults.length === 1 ? " home" : " homes") + " near Fairfield";
+    if (currentResults.length === 0) {
+      grid.innerHTML = "";
+      empty.classList.remove("hidden");
+    } else {
+      empty.classList.add("hidden");
+      grid.innerHTML = currentResults.map(listingCard).join("");
+    }
+  }
+
+  // Only rendered when the Map view is actually visible — no point loading
+  // a second copy of every card's photo on pages that never open the map.
+  function renderMapSplitList() {
+    document.getElementById("mapSplitList").innerHTML = currentResults.length
+      ? currentResults.map(listingCard).join("")
+      : '<div class="empty-state"><p>No homes match those filters.</p></div>';
+  }
+
+  window.onFavChanged = function () {
+    renderResults();
+    if (document.getElementById("mapView").classList.contains("active")) {
+      renderMapSplitList();
+    }
+  };
+
+  // Rent inputs
+  document.getElementById("fRentMin").addEventListener("input", function (e) {
+    state.rentMin = e.target.value ? Number(e.target.value) : null;
+    applyFilters();
+  });
+  document.getElementById("fRentMax").addEventListener("input", function (e) {
+    state.rentMax = e.target.value ? Number(e.target.value) : null;
+    applyFilters();
+  });
+
+  // Beds chips
+  document.getElementById("fBeds").addEventListener("click", function (e) {
+    var chip = e.target.closest(".chip-toggle");
+    if (!chip) return;
+    this.querySelectorAll(".chip-toggle").forEach(function (c) { c.classList.remove("active"); });
+    chip.classList.add("active");
+    state.beds = Number(chip.dataset.val);
+    applyFilters();
+  });
+
+  // Walk slider
+  var walkInput = document.getElementById("fWalk");
+  var walkVal = document.getElementById("fWalkVal");
+  walkInput.addEventListener("input", function (e) {
+    state.walk = Number(e.target.value);
+    walkVal.textContent = state.walk >= 25 ? "25 min or less" : state.walk + " min or less";
+    applyFilters();
+  });
+
+  // Switches
+  function wireSwitch(id, key) {
+    var el = document.getElementById(id);
+    el.addEventListener("click", function () {
+      el.classList.toggle("on");
+      state[key] = el.classList.contains("on");
+      applyFilters();
+    });
+  }
+  wireSwitch("fFurnished", "furnished");
+  wireSwitch("fPets", "pets");
+
+  // Clear
+  document.getElementById("fClear").addEventListener("click", function () {
+    state = { rentMin: null, rentMax: null, beds: 0, walk: 25, furnished: false, pets: false, categories: [] };
+    document.getElementById("fRentMin").value = "";
+    document.getElementById("fRentMax").value = "";
+    document.querySelectorAll("#fBeds .chip-toggle").forEach(function (c, i) { c.classList.toggle("active", i === 0); });
+    walkInput.value = 25;
+    walkVal.textContent = "25 min or less";
+    document.getElementById("fFurnished").classList.remove("on");
+    document.getElementById("fPets").classList.remove("on");
+    document.querySelectorAll("#categoryRow .chip-toggle").forEach(function (c) { c.classList.remove("active"); });
+    applyFilters();
+  });
+
+  // List / Map toggle
+  var listBtn = document.getElementById("viewListBtn");
+  var mapBtn = document.getElementById("viewMapBtn");
+  var listView = document.getElementById("listView");
+  var mapView = document.getElementById("mapView");
+  listBtn.addEventListener("click", function () {
+    listBtn.classList.add("active"); mapBtn.classList.remove("active");
+    listView.classList.add("active"); mapView.classList.remove("active");
+  });
+  mapBtn.addEventListener("click", function () {
+    mapBtn.classList.add("active"); listBtn.classList.remove("active");
+    mapView.classList.add("active"); listView.classList.remove("active");
+    renderMapSplitList();
+    initMapView();
+  });
+
+  /* --------------------- Map (Google Maps or schematic) --------------------- */
+  var mapInitDone = false;
+  var googleMapInstance = null;
+  var googleMarkers = [];
+
+  function initMapView() {
+    if (mapInitDone) {
+      if (googleMapInstance) refreshGoogleMarkers();
+      else renderSchematicPins();
+      return;
+    }
+    mapInitDone = true;
+    if (window.CONFIG.MAPS_KEY) {
+      loadGoogleMaps();
+    } else {
+      showSchematic();
+    }
+  }
+
+  function showSchematic() {
+    document.getElementById("gmap").classList.add("hidden");
+    document.getElementById("schematicMap").classList.remove("hidden");
+    renderSchematicPins();
+  }
+
+  function loadGoogleMaps() {
+    window.__gmapsFail = function () { showSchematic(); };
+    var script = document.createElement("script");
+    script.src = "https://maps.googleapis.com/maps/api/js?key=" + encodeURIComponent(window.CONFIG.MAPS_KEY) + "&callback=__initGoogleMap";
+    script.onerror = function () { showSchematic(); };
+    window.__initGoogleMap = function () {
+      try {
+        document.getElementById("gmap").classList.remove("hidden");
+        document.getElementById("schematicMap").classList.add("hidden");
+        googleMapInstance = new google.maps.Map(document.getElementById("gmap"), {
+          center: window.CONFIG.CAMPUS,
+          zoom: 14,
+          disableDefaultUI: false
+        });
+        new google.maps.Marker({
+          position: window.CONFIG.CAMPUS,
+          map: googleMapInstance,
+          title: "Fairfield University",
+          icon: { path: google.maps.SymbolPath.CIRCLE, scale: 7, fillColor: "#16130F", fillOpacity: 1, strokeColor: "#fff", strokeWeight: 2 }
+        });
+        refreshGoogleMarkers();
+      } catch (err) {
+        showSchematic();
+      }
+    };
+    // If the key is invalid, Google calls this global — fall back gracefully.
+    window.gm_authFailure = function () { showSchematic(); };
+    document.body.appendChild(script);
+  }
+
+  function refreshGoogleMarkers() {
+    if (!googleMapInstance) return;
+    googleMarkers.forEach(function (m) { m.setMap(null); });
+    googleMarkers = [];
+    currentResults.forEach(function (l) {
+      var marker = new google.maps.Marker({
+        position: { lat: l.lat, lng: l.lng },
+        map: googleMapInstance,
+        label: { text: "$" + Math.round(l.rent / 100) / 10 + "k", color: "#fff", fontWeight: "800", fontSize: "11px" },
+        icon: {
+          path: "M0,0 a18,18 0 1,0 0.1,0",
+          fillColor: "#16130F", fillOpacity: 1, strokeColor: "#fff", strokeWeight: 2, scale: 1
+        }
+      });
+      var info = new google.maps.InfoWindow({
+        content: '<div style="font-family:sans-serif;min-width:160px"><strong>' + l.title + '</strong><br>' + window.money(l.rent) + '/mo · ' + l.beds + ' bed<br><a href="listing.html?id=' + l.id + '">View listing →</a></div>'
+      });
+      marker.addListener("click", function () { info.open(googleMapInstance, marker); });
+      googleMarkers.push(marker);
+    });
+  }
+
+  function renderSchematicPins() {
+    var box = document.getElementById("schematicMap");
+    var pad = 0.06;
+    var lats = window.LISTINGS.map(function (l) { return l.lat; }).concat([window.CONFIG.CAMPUS.lat]);
+    var lngs = window.LISTINGS.map(function (l) { return l.lng; }).concat([window.CONFIG.CAMPUS.lng]);
+    var minLat = Math.min.apply(null, lats) - pad, maxLat = Math.max.apply(null, lats) + pad;
+    var minLng = Math.min.apply(null, lngs) - pad, maxLng = Math.max.apply(null, lngs) + pad;
+
+    function pos(lat, lng) {
+      var x = ((lng - minLng) / (maxLng - minLng)) * 100;
+      var y = (1 - (lat - minLat) / (maxLat - minLat)) * 100;
+      return { x: x, y: y };
+    }
+
+    var campusPos = pos(window.CONFIG.CAMPUS.lat, window.CONFIG.CAMPUS.lng);
+    var html = '<div class="campus-pin" style="left:' + campusPos.x + '%; top:' + campusPos.y + '%"></div>' +
+      '<div class="campus-label" style="left:' + campusPos.x + '%; top:' + campusPos.y + '%">Fairfield University</div>';
+
+    currentResults.forEach(function (l) {
+      var p = pos(l.lat, l.lng);
+      html += '<div class="price-pin" style="left:' + p.x + '%; top:' + p.y + '%" data-id="' + l.id + '">' + window.money(l.rent) + '</div>';
+    });
+    html += '<div class="map-popover" id="mapPopover"></div>';
+    box.innerHTML = html;
+
+    box.querySelectorAll(".price-pin").forEach(function (pin) {
+      pin.addEventListener("click", function () {
+        box.querySelectorAll(".price-pin").forEach(function (p) { p.classList.remove("active"); });
+        pin.classList.add("active");
+        var listing = window.LISTINGS.find(function (l) { return l.id === Number(pin.dataset.id); });
+        var pop = document.getElementById("mapPopover");
+        pop.innerHTML = '<div class="t">' + listing.title + '</div><div class="p">' + window.money(listing.rent) + '/mo</div><a href="listing.html?id=' + listing.id + '" class="btn btn-primary btn-sm btn-block">View listing</a>';
+        var left = parseFloat(pin.style.left), top = parseFloat(pin.style.top);
+        pop.style.left = "calc(" + left + "% - 110px)";
+        pop.style.top = "calc(" + top + "% - 150px)";
+        pop.classList.add("show");
+      });
+    });
+  }
+
+  applyFilters();
+</script>
+</body>
+</html>

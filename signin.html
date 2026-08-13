@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sign in — StagNest</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+
+<header id="nav"></header>
+
+<main>
+  <div class="auth-wrap">
+    <div class="auth-card">
+      <div class="card card-pad" style="padding:32px">
+
+        <div class="role-toggle" id="roleToggle">
+          <button type="button" class="active" data-role="student">Student</button>
+          <button type="button" data-role="landlord">Landlord</button>
+        </div>
+
+        <!-- Step 1: email -->
+        <div class="auth-step active" id="stepEmail">
+          <h2 style="font-size:24px; margin-bottom:8px">Sign in to StagNest</h2>
+          <p class="muted" id="emailIntro" style="margin-bottom:24px; font-size:14.5px">Use your Fairfield student email to verify your account.</p>
+          <form id="emailForm">
+            <div class="field" id="emailField">
+              <label for="emailInput">Email address</label>
+              <input type="email" class="input" id="emailInput" placeholder="you@student.fairfield.edu" required>
+              <div class="error" id="emailError">Please use your @student.fairfield.edu email to sign in as a student.</div>
+            </div>
+            <button type="submit" class="btn btn-primary btn-lg btn-block">Send code</button>
+          </form>
+        </div>
+
+        <!-- Step 2: code -->
+        <div class="auth-step" id="stepCode">
+          <button type="button" class="auth-back" id="backBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+            Back
+          </button>
+          <h2 style="font-size:24px; margin-bottom:8px">Enter your code</h2>
+          <p class="muted" style="margin-bottom:24px; font-size:14.5px">We sent a 6-digit code to <strong id="sentToEmail"></strong>. This is a demo — any 6 digits will work.</p>
+          <div class="code-inputs" id="codeInputs">
+            <input type="text" inputmode="numeric" maxlength="1" class="input">
+            <input type="text" inputmode="numeric" maxlength="1" class="input">
+            <input type="text" inputmode="numeric" maxlength="1" class="input">
+            <input type="text" inputmode="numeric" maxlength="1" class="input">
+            <input type="text" inputmode="numeric" maxlength="1" class="input">
+            <input type="text" inputmode="numeric" maxlength="1" class="input">
+          </div>
+          <div class="error" id="codeError" style="margin-bottom:14px; display:none">Enter all 6 digits to continue.</div>
+          <button type="button" class="btn btn-primary btn-lg btn-block" id="verifyBtn">Verify &amp; sign in</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer id="footer"></footer>
+
+<script src="assets/data.js"></script>
+<script src="assets/app.js"></script>
+<script>
+  var role = "student";
+  var roleToggle = document.getElementById("roleToggle");
+  var emailInput = document.getElementById("emailInput");
+  var emailIntro = document.getElementById("emailIntro");
+  var emailField = document.getElementById("emailField");
+  var emailError = document.getElementById("emailError");
+
+  roleToggle.addEventListener("click", function (e) {
+    var btn = e.target.closest("button");
+    if (!btn) return;
+    role = btn.dataset.role;
+    roleToggle.querySelectorAll("button").forEach(function (b) { b.classList.toggle("active", b === btn); });
+    emailField.classList.remove("has-error");
+    if (role === "student") {
+      emailIntro.textContent = "Use your Fairfield student email to verify your account.";
+      emailInput.placeholder = "you@student.fairfield.edu";
+    } else {
+      emailIntro.textContent = "Sign in with the email you list your properties under.";
+      emailInput.placeholder = "you@example.com";
+    }
+  });
+
+  document.getElementById("emailForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var val = emailInput.value.trim().toLowerCase();
+    var valid;
+    if (role === "student") {
+      valid = /^[^\s@]+@student\.fairfield\.edu$/.test(val);
+    } else {
+      valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
+    }
+    if (!valid) {
+      emailField.classList.add("has-error");
+      return;
+    }
+    emailField.classList.remove("has-error");
+    document.getElementById("sentToEmail").textContent = val;
+    document.getElementById("stepEmail").classList.remove("active");
+    document.getElementById("stepCode").classList.add("active");
+    document.querySelectorAll("#codeInputs input").forEach(function (i) { i.value = ""; });
+    document.querySelector("#codeInputs input").focus();
+  });
+
+  document.getElementById("backBtn").addEventListener("click", function () {
+    document.getElementById("stepCode").classList.remove("active");
+    document.getElementById("stepEmail").classList.add("active");
+  });
+
+  // Code inputs: auto-advance
+  var codeInputs = Array.prototype.slice.call(document.querySelectorAll("#codeInputs input"));
+  codeInputs.forEach(function (input, i) {
+    input.addEventListener("input", function () {
+      input.value = input.value.replace(/[^0-9]/g, "").slice(0, 1);
+      if (input.value && i < codeInputs.length - 1) codeInputs[i + 1].focus();
+      document.getElementById("codeError").style.display = "none";
+    });
+    input.addEventListener("keydown", function (e) {
+      if (e.key === "Backspace" && !input.value && i > 0) codeInputs[i - 1].focus();
+    });
+  });
+
+  document.getElementById("verifyBtn").addEventListener("click", function () {
+    var code = codeInputs.map(function (i) { return i.value; }).join("");
+    if (code.length !== 6) {
+      document.getElementById("codeError").style.display = "block";
+      return;
+    }
+    window.location.href = role === "student" ? "dashboard.html" : "manage.html";
+  });
+</script>
+</body>
+</html>
